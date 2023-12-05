@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,17 +48,37 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Buffers.cs" />
-    <Compile Include="Game.cs" />
-    <Compile Include="GameObjects\Bird.cs" />
-    <Compile Include="GameObjects\Entity.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Engine\Objects\Rectangle.cs" />
+    <Compile Include="Engine\Objects\RenderGroup.cs" />
+    <Compile Include="Engine\Renderer\Renderer.cs" />
+    <Compile Include="Engine\Renderer\Vertex.cs" />
+    <Compile Include="Engine\Texture\Texture.cs" />
+    <Compile Include="Engine\Texture\TextureLoader.cs" />
+    <Compile Include="Game\Background.cs" />
+    <Compile Include="Game\PipePair.cs" />
+    <Compile Include="Game\Pipes.cs" />
+    <Compile Include="Game\Player.cs" />
+    <Compile Include="Program\Program.cs" />
+    <Compile Include="Program\Window.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Engine\Shader\ShaderProgram.cs" />
+    <None Include="Resources\resources.config" />
+    <None Include="Shaders\shader.frag">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Shaders\shader.vert">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\background.png" />
+    <Content Include="Resources\pipe.png" />
+    <Content Include="Resources\player.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

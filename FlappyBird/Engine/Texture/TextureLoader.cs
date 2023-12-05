@@ -27,6 +27,7 @@ namespace FlappyBird.Engine
 
             _textures = new Texture[_texturePaths.Length];
 
+            //Создаем отдельные текстуры
             for (int i = 0; i < _textures.Length; i++)
                 _textures[i] = new Texture(_texturePaths[i]);
         }

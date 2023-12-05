@@ -9,7 +9,7 @@ namespace FlappyBird.Engine
     {
         private List<RenderGroup> _renderGroups;
 
-        private Shader _shader;
+        private ShaderProgram _shader;
 
         private int _vao;
         private int _vbo;
@@ -19,53 +19,53 @@ namespace FlappyBird.Engine
 
         public Renderer()
         {
-            //Console.WriteLine(VertexSize);
             _renderGroups = new List<RenderGroup>();
 
-            //set clear color to some bluish color
             GL.ClearColor(1.0f, 1f, 1.0f, 1.0f);
 
-            //enables opengl to use transparent textures
+            //включаем возможность использования прозрачных текстур
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-            //initialises the shader and all textures
-            _shader = new Shader("../../Shaders/shader.vert", "../../Shaders/shader.frag");
+            //инициализируем шейдеры и все текстуры
+            _shader = new ShaderProgram(@"Shaders/shader.vert", @"Shaders/shader.frag");
             TextureLoader loader = new TextureLoader("../../Resources/resources.config");
 
-            //creates our vertex array object
+            //создание VAO
             _vao = GL.GenVertexArray();
             GL.BindVertexArray(_vao);
 
-            //creates the vbo and sets its size to the size of one vertex
+            //создаем VBO и задаем его размер, равный одной вершине
             _vbo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
             GL.BufferData(BufferTarget.ArrayBuffer, VertexSize * 4, IntPtr.Zero, BufferUsageHint.DynamicDraw);
 
-            //creates the ebo and sets its size to one set od indicies
+            //создаем EBO и задаем его размер, равный одному набору индексов
             _ebo = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
             GL.BufferData(BufferTarget.ElementArrayBuffer, 6 * sizeof(uint), IntPtr.Zero, BufferUsageHint.DynamicDraw);
 
-            //sets the shaders inputs
-            //for aPosition
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, VertexSize, 0);
+            
+            //указываем входные переменные для шейдеров
+            //первый аргумент - layout (location=...)
+            //для aPosition
             GL.EnableVertexAttribArray(0);
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, VertexSize, 0);
 
-            //for aTexCoord
+            //для aTexCoord
             GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, VertexSize, 3 * sizeof(float));
             GL.EnableVertexAttribArray(1);
 
-            //for aTexIndex
+            //для aTexIndex
             GL.VertexAttribPointer(2, 1, VertexAttribPointerType.Float, false, VertexSize, 5 * sizeof(float));
             GL.EnableVertexAttribArray(2);
 
-            _shader.Use();
+            _shader.RunProgram();
 
-            //setting the deafult transformation uniform
+            //задаем единичную матрицу трансформации в качестве глобальной переменной шейдера (uniform)
             _shader.SetMatrix4("transform", Matrix4.Identity);
-
-            //assigns the texture index to the textures
+            
+            //связываем индексы текстур с самими текстурами
             loader.UseTextures();
             _shader.SetIntArray("textures", loader.GetTextureIndicies());
         }
@@ -76,17 +76,18 @@ namespace FlappyBird.Engine
                 if (!group.Visible)
                     continue;
 
-                //store the data of the rectangle in the buffers
+                //сохраняем данные о прямоугольниках (объектах) в буферы
                 GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
                 GL.BufferData(BufferTarget.ArrayBuffer, group.Rectangles.Count * 4 * VertexSize, group.Verticies, BufferUsageHint.DynamicDraw);
+
 
                 GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
                 GL.BufferData(BufferTarget.ElementArrayBuffer, group.Rectangles.Count * 6 * sizeof(uint), group.Indicies, BufferUsageHint.DynamicDraw);
 
-                //transforming the rectangle
+                //трансформация прямоугольника
                 _shader.SetMatrix4("transform", group.TransformationMatrix);
 
-                //drawing
+                //отрисовка
                 GL.BindVertexArray(_vao);
                 GL.DrawElements(BeginMode.Triangles, 6 * sizeof(uint), DrawElementsType.UnsignedInt, 0);
             }
@@ -112,6 +113,7 @@ namespace FlappyBird.Engine
         //вероятно добавляем прямоугольник в список буфера
         public void AddRectangleToGroup(int index, Rectangle rect)
         {
+            //Console.Write(index + " ");
             _renderGroups[index].Rectangles.Add(rect);
         }
 

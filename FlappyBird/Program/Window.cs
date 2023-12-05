@@ -16,7 +16,7 @@ namespace FlappyBird.Program
         private bool running = false; //по сути нужен для запуска игры, то есть ожидает нажатия пробела
 
         private Renderer _renderer;
-        private Background _background; //отмечен как неиспользуемый из-за, т.к. фон является статическим и неизменяется
+        private Background _background; //отмечен как неиспользуемый, т.к. фон является статическим и неизменяется
         private Player _player;
         /// <summary>колонны</summary>
         private Pipes _pipes;
@@ -75,7 +75,7 @@ namespace FlappyBird.Program
                 _renderer.RenderGroupVisible(_titlescreen, false);
                 running = true;
             }
-
+            
             if (input.IsKeyDown(Key.Escape))
                 Exit();
 
@@ -99,6 +99,20 @@ namespace FlappyBird.Program
                 _renderer.RenderGroupVisible(_deathscreen, true);
             }
 
+            //нужно перезагружать объект раз в +- десяток секунд
+            //удаление элемента с экрана
+            if (input.IsKeyDown(Key.BackSpace))
+            {
+                //_player.Alive = false;
+                _renderer.ClearRenderGroup(_player.Group);
+            }
+            else if (input.IsKeyUp(Key.BackSpace))
+                _renderer.AddRectangleToGroup(_player.Group, _player._rectangle);
+
+            //вывод фпс
+            if (DateTime.Now.Millisecond >= 980)
+                Console.WriteLine(1/e.Time);
+
             base.OnUpdateFrame(e);
         }
 
@@ -107,6 +121,12 @@ namespace FlappyBird.Program
             GL.Viewport(0, 0, Width, Height);
 
             base.OnResize(e);
+        }
+
+        protected override void OnUnload(EventArgs e)
+        {
+            base.OnUnload(e);
+
         }
     }
 }

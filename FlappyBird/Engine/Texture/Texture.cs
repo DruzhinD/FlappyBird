@@ -9,6 +9,10 @@ namespace FlappyBird.Engine
     {
         public readonly int Handle;
 
+        /// <summary>
+        /// Создание текстуры
+        /// </summary>
+        /// <param name="path">путь к изображению текстуры</param>
         public Texture(string path)
         {
             Handle = GL.GenTexture();

@@ -12,6 +12,7 @@ namespace FlappyBird.Game
 
         private float _offset;
 
+        //offset - расстояние между разными парами блоков по оси X
         public Pipes(Renderer renderer, int count, float offset)
         {
             _renderer = renderer;
@@ -26,11 +27,11 @@ namespace FlappyBird.Game
             }
         }
 
-        public void MovePipes(float eTime)
+        public void MovePipes(float frameTime)
         {
             for (int i = 0; i < PipePairs.Length; i++)
             {
-                PipePairs[i].MovePosition -= 0.5f * eTime; //0.5 по умолч
+                PipePairs[i].MovePosition -= 0.6f * frameTime; //0.5 по умолч
 
                 if (PipePairs[i].MovePosition < -2f - 0.25f)
                 {

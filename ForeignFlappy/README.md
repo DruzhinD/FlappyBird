@@ -1,2 +1,0 @@
-# FlappyBird
- FlappyBird with OpenGL
