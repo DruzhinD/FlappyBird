@@ -6,8 +6,8 @@ namespace FlappyBird.Game
 {
     class Player
     {
-        private Renderer _renderer;
-        /*private*/ public Rectangle _rectangle;
+        private readonly Renderer _renderer;
+        public Rectangle Rect { get; private set; }
 
         private float _velocity;
         private float _position;
@@ -17,15 +17,15 @@ namespace FlappyBird.Game
 
         public int Group { get; }
         public int Score { get; private set; }
-        public bool Alive { get; /*private*/ set; }
+        public bool Alive { get; private set; }
 
         public Player(Renderer renderer)
         {
             _renderer = renderer;
-            _rectangle = new Rectangle(0f, 0f, _width, _height, 1f);
+            Rect = new Rectangle(0f, 0f, _width, _height, 7f);
             //сохраняем индекс созданного буфера
             Group = _renderer.CreateRenderGroup();
-            _renderer.AddRectangleToGroup(Group, _rectangle);
+            _renderer.AddRectangleToGroup(Group, Rect);
 
             Alive = true;
         }
@@ -74,14 +74,14 @@ namespace FlappyBird.Game
             {
 
                 //проверка коллизий с верхней колонной
-                if (_position > pair.HorizontalOffset + 0.4f - _height / 3 && pair.MovePosition < -1f + _width / 3 && pair.MovePosition > -1f + _width / 3 - 0.25f)
+                if (_position > pair.VerticalOffset + pair.ConstOffsetY - _height / 3 && pair.MovePosition < -1f + _width / 3 && pair.MovePosition > -1f + _width / 3 - 0.25f)
                 {
                     Alive = false;
                     break;
                 }
 
                 //проверка коллизий с нижней колонной
-                if (_position < pair.HorizontalOffset - 0.4f + _height / 3 && pair.MovePosition < -1f + _width / 3 && pair.MovePosition > -1f + _width / 3 - 0.25f)
+                if (_position < pair.VerticalOffset - pair.ConstOffsetY + _height / 3 && pair.MovePosition < -1f + _width / 3 && pair.MovePosition > -1f + _width / 3 - 0.25f)
                 {
                     Alive = false;
                     break;

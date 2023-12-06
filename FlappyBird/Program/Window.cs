@@ -1,6 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Media;
+using System.Threading;
 using FlappyBird.Engine;
 using FlappyBird.Game;
 using OpenTK;
@@ -23,26 +22,30 @@ namespace FlappyBird.Program
         private int _titlescreen;
         private int _deathscreen;
 
+        private DisplayDevice _display;
+        
         public int Score { get { return _player.Score; } }
 
         public Window(int width, int height, string title) : base(width, height, GraphicsMode.Default, title) { }
 
         protected override void OnLoad(EventArgs e)
         {
+            VSync = VSyncMode.On;
+            //создаем экземпляр, содержащий информацию о дисплее
+            _display = DisplayDevice.GetDisplay(DisplayIndex.Default);
+            Location = new System.Drawing.Point(_display.Width / 4, _display.Height / 4);
+
             //CursorVisible = false;
             _renderer = new Engine.Renderer();
             _background = new Background(_renderer);
             _player = new Player(_renderer);
-            _pipes = new Pipes(_renderer, 3, 0.74f);
-
+            _pipes = new Pipes(_renderer, 3, 0.74f, 3);
             _titlescreen = _renderer.CreateRenderGroup();
             _renderer.AddRectangleToGroup(_titlescreen, new Rectangle(0f, 0f, 2f, 2f, 3f));
 
             _deathscreen = _renderer.CreateRenderGroup();
-            _renderer.AddRectangleToGroup(_deathscreen, new Rectangle(0f, 0f, 2f, 2f, 4f));
+            _renderer.AddRectangleToGroup(_deathscreen, new Rectangle(0f, 0f, 2f, 2f, 6f));
             _renderer.RenderGroupVisible(_deathscreen, false);
-
-            //WindowState = WindowState.Fullscreen;
 
             base.OnLoad(e);
         }
@@ -55,6 +58,15 @@ namespace FlappyBird.Program
                 _player.MovePlayer((float)e.Time);
                 _player.DetectCollision(_pipes);
             }
+
+            //костыль против лагов
+            if (RenderFrequency < _display.RefreshRate - 20)
+            {
+                //Console.WriteLine($"Перезагрузка при RF: {RenderFrequency} UF: {UpdateFrequency}");
+                _renderer.ClearRenderGroup(_player.Group);
+                _renderer.AddRectangleToGroup(_player.Group, _player.Rect);
+            }
+
 
             GL.Clear(ClearBufferMask.ColorBufferBit);
             _renderer.Render();
@@ -99,19 +111,12 @@ namespace FlappyBird.Program
                 _renderer.RenderGroupVisible(_deathscreen, true);
             }
 
-            //нужно перезагружать объект раз в +- десяток секунд
-            //удаление элемента с экрана
-            if (input.IsKeyDown(Key.BackSpace))
-            {
-                //_player.Alive = false;
-                _renderer.ClearRenderGroup(_player.Group);
-            }
-            else if (input.IsKeyUp(Key.BackSpace))
-                _renderer.AddRectangleToGroup(_player.Group, _player._rectangle);
-
             //вывод фпс
-            if (DateTime.Now.Millisecond >= 980)
-                Console.WriteLine(1/e.Time);
+            if (DateTime.Now.Millisecond >= 1990)
+            {
+                Console.WriteLine($"Кол-во кадров: {UpdateFrequency}"); //количество фпс
+                Console.WriteLine($"Один кадр (с): {UpdatePeriod}"); //длительность одного кадра
+            }
 
             base.OnUpdateFrame(e);
         }
