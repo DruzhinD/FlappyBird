@@ -22,7 +22,7 @@ namespace FlappyBird.Game
         public Player(Renderer renderer)
         {
             _renderer = renderer;
-            Rect = new Rectangle(0f, 0f, _width, _height, 7f);
+            Rect = new Rectangle(0f, 0f, _width, _height, 8f); //Rectmode = center
             //сохраняем индекс созданного буфера
             Group = _renderer.CreateRenderGroup();
             _renderer.AddRectangleToGroup(Group, Rect);
