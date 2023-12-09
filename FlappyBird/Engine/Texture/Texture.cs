@@ -7,7 +7,7 @@ namespace FlappyBird.Engine
 {
     class Texture
     {
-        public readonly int Handle;
+        public readonly int program;
 
         /// <summary>
         /// Создание текстуры
@@ -15,7 +15,7 @@ namespace FlappyBird.Engine
         /// <param name="path">путь к изображению текстуры</param>
         public Texture(string path)
         {
-            Handle = GL.GenTexture();
+            program = GL.GenTexture();
 
             Use();
 
@@ -49,7 +49,7 @@ namespace FlappyBird.Engine
         public void Use(TextureUnit unit = TextureUnit.Texture0)
         {
             GL.ActiveTexture(unit);
-            GL.BindTexture(TextureTarget.Texture2D, Handle);
+            GL.BindTexture(TextureTarget.Texture2D, program);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using FlappyBird.Engine;
 using OpenTK;
 using System;
+using System.Threading;
 
 namespace FlappyBird.Game
 {
@@ -12,8 +13,8 @@ namespace FlappyBird.Game
         private float _velocity;
         private float _position;
         private float _angle;
-        private float _height = 0.2f;
-        private float _width = 0.1f;
+        private float _height = 0.16f*1.5f;
+        private float _width = 0.09f*1.5f;
 
         public int Group { get; }
         public int Score { get; private set; }
@@ -64,7 +65,7 @@ namespace FlappyBird.Game
         /// Проверка на коллизии с колоннами
         /// </summary>
         /// <param name="pipes">Колонны</param>
-        public void DetectCollision(Pipes pipes)
+        public void DetectCollision(Pipes pipes, float frameTime)
         {
             //проверка коллизий с верхней и нижней частью окна
             if (this._position > 1f - _height / 3 || this._position < -1f + _height / 3)
@@ -74,26 +75,34 @@ namespace FlappyBird.Game
             {
 
                 //проверка коллизий с верхней колонной
-                if (_position > pair.VerticalOffset + pair.ConstOffsetY - _height / 3 && pair.MovePosition < -1f + _width / 3 && pair.MovePosition > -1f + _width / 3 - 0.25f)
+                if (_position > pair.OffsetY + pair.ConstOffsetY - _height / 3 && pair.MovePosition < -1f + _width / 3 && pair.MovePosition > -1f + _width / 3 - 0.15f)
                 {
                     Alive = false;
                     break;
                 }
 
                 //проверка коллизий с нижней колонной
-                if (_position < pair.VerticalOffset - pair.ConstOffsetY + _height / 3 && pair.MovePosition < -1f + _width / 3 && pair.MovePosition > -1f + _width / 3 - 0.25f)
+                if (_position < pair.OffsetY - pair.ConstOffsetY + _height / 3 && pair.MovePosition < -1f + _width / 3 && pair.MovePosition > -1f + _width / 3 - 0.15f)
                 {
                     Alive = false;
                     break;
                 }
 
-                if (pair.MovePosition < -1f && pair.MovePosition > -1.005f)
+                if (pair.MovePosition < -1f && pair.MovePosition > -1f - pipes.PipeSpeedFrequency * frameTime)
                 {
-                    Score++;
+                     Score++;
+                    Console.WriteLine($"Счет: {Score}");
+                    for (int i = 5; i <= 23; i += 6)
+                    {
+                        if (Rect.Verticies[i] == 8f)
+                            Rect.Verticies[i] = 1f;
+                        else
+                            Rect.Verticies[i] = 8f;
+                    }
                 }
             }
         }
-
+        
         /// <summary>
         /// реализация взмаха крыльев птички
         /// </summary>
@@ -101,7 +110,7 @@ namespace FlappyBird.Game
         {
             if (_position == -1f)
                 _position = -0.999f;
-            _velocity = 0.02f;
+            _velocity = 0.023f;
             _angle = 6;
         }
     }

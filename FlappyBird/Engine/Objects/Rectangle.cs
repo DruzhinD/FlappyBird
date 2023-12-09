@@ -4,6 +4,7 @@
     {
         public float[] Verticies { get; set; }
 
+        //индексы
         public uint[] Indicies { get; set; } =
         {
             0, 1, 2,

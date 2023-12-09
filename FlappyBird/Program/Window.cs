@@ -35,11 +35,10 @@ namespace FlappyBird.Program
             _display = DisplayDevice.GetDisplay(DisplayIndex.Default);
             Location = new System.Drawing.Point(_display.Width / 4, _display.Height / 4);
 
-            //CursorVisible = false;
-            _renderer = new Engine.Renderer();
+            _renderer = new Renderer();
             _background = new Background(_renderer);
             _player = new Player(_renderer);
-            _pipes = new Pipes(_renderer, 3, 0.74f, 3);
+            _pipes = new Pipes(_renderer, 3, 0.8167f, 0.31f);
             _titlescreen = _renderer.CreateRenderGroup();
             _renderer.AddRectangleToGroup(_titlescreen, new Rectangle(0f, 0f, 2f, 2f, 3f));
 
@@ -56,7 +55,7 @@ namespace FlappyBird.Program
             {
                 _pipes.MovePipes((float)e.Time);
                 _player.MovePlayer((float)e.Time);
-                _player.DetectCollision(_pipes);
+                _player.DetectCollision(_pipes, (float)e.Time);
             }
 
             //костыль против лагов
@@ -75,12 +74,23 @@ namespace FlappyBird.Program
             base.OnRenderFrame(e);
         }
 
+        private byte jumpCounter = 0;
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             var input = Keyboard.GetState();
 
             if (input.IsKeyDown(Key.Space) && running)
-                _player.Jump();
+            {
+                if (jumpCounter < 1)
+                {
+                    jumpCounter++;
+                    _player.Jump();
+                }
+            }
+            else if (input.IsKeyUp(Key.Space) && running)
+            {
+                jumpCounter = 0;
+            }
 
             if (input.IsKeyDown(Key.Space) && running == false)
             {
@@ -108,7 +118,7 @@ namespace FlappyBird.Program
 
             if (!_player.Alive)
             {
-                _renderer.RenderGroupVisible(_deathscreen, true);
+                //_renderer.RenderGroupVisible(_deathscreen, true);
             }
 
             //вывод фпс

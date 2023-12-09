@@ -8,15 +8,16 @@ namespace FlappyBird.Game
         public Rectangle RectangleBottom { get; }
         public Rectangle RectangleTop {get; }
 
-        /// <summary>Расстояние между разными парами колонн</summary>
+        /// <summary>Координата по оси X <br/>
+        /// Причем правая часть окна = 0f, левая = -2f</summary>
         public float MovePosition { get; set; }
 
-        /// <summary>Расстояние между частями ОДНОЙ колонны</summary>
-        public float VerticalOffset { get; set; }
+        /// <summary>Отступ по оси Y относительно центра <br/>
+        /// как только колонна уходит за левую часть окна, это свойство меняется</summary>
+        public float OffsetY { get; set; }
 
-        //нужна ли? если все равно расстояние меняется в верхней переменной
         /// <summary>
-        /// =VerticalOffset, только не изменяется при работе программы
+        /// расстояние между верхней и нижней частью колонны
         /// </summary>
         public float ConstOffsetY { get; }
 
@@ -24,8 +25,8 @@ namespace FlappyBird.Game
 
         /// <param name="renderer">экземпляр рендера</param>
         /// <param name="offsetX">расстояние между разными парами колонн</param>
-        /// <param name="offsetY">дробная часть расстояния между верхней и нижней частями ОДНОЙ колонны <br/>
-        /// Напр. у числа 1,5 дробная часть = 5, т.е. вводим 5</param>
+        /// <param name="offsetY">расстояние между верхней и нижней частью колонны <br/>
+        /// должно быть меньше 0.9f</param>
         public PipePair(Renderer renderer, float offsetX, float offsetY)
         {
             _renderer = renderer;
@@ -35,8 +36,8 @@ namespace FlappyBird.Game
             //однако нужно еще подумать как это реализовать грамотно
             //уменьшить - уменьшить расстояние; увеличить - увеличить расстояние
             //однако коллизии работают по-другому
-            RectangleTop = new Rectangle(1f, 1+ConstOffsetY, 0.25f, -1f, 2f, Rectangle.RectMode.Left);
-            RectangleBottom = new Rectangle(1f , -1-ConstOffsetY, 0.25f, 1f, 2f, Rectangle.RectMode.Left);
+            RectangleTop = new Rectangle(1f, 2+ConstOffsetY, 0.15f, -2f, 2f, Rectangle.RectMode.Left);
+            RectangleBottom = new Rectangle(1f , -2-ConstOffsetY, 0.15f, 2f, 2f, Rectangle.RectMode.Left);
 
             Group = _renderer.CreateRenderGroup();
             _renderer.AddRectangleToGroup(Group, RectangleBottom);

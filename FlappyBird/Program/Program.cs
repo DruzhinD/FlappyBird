@@ -6,9 +6,8 @@ namespace FlappyBird.Program
     {
         static unsafe void Main(string[] args)
         {
-            using (Window win = new Window(1000, 500, "Flappy Bird"))
+            using (Window win = new Window(16*70, 9*70, "Flappy Bird"))
             {
-                win.VSync = OpenTK.VSyncMode.On;
                 win.Run();
                 Console.WriteLine(win.Score);
             }
