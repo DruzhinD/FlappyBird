@@ -17,6 +17,7 @@ namespace FlappyBird.Program
         private Renderer _renderer;
         private Background _background; //отмечен как неиспользуемый, т.к. фон является статическим и неизменяется
         private Player _player;
+        private ScoreTable _scoreTable;
         /// <summary>колонны</summary>
         private Pipes _pipes;
         private int _titlescreen;
@@ -39,8 +40,9 @@ namespace FlappyBird.Program
             _background = new Background(_renderer);
             _player = new Player(_renderer);
             _pipes = new Pipes(_renderer, 3, 0.8167f, 0.31f);
+            _scoreTable = new ScoreTable(_renderer);
             _titlescreen = _renderer.CreateRenderGroup();
-            _renderer.AddRectangleToGroup(_titlescreen, new Rectangle(0f, 0f, 2f, 2f, 3f));
+            _renderer.AddRectangleToGroup(_titlescreen, new Rectangle(0f, 0f, 2f, 2f, 13f));
 
             _deathscreen = _renderer.CreateRenderGroup();
             _renderer.AddRectangleToGroup(_deathscreen, new Rectangle(0f, 0f, 2f, 2f, 6f));
@@ -55,13 +57,13 @@ namespace FlappyBird.Program
             {
                 _pipes.MovePipes((float)e.Time);
                 _player.MovePlayer((float)e.Time);
-                _player.DetectCollision(_pipes, (float)e.Time);
+                _player.DetectCollision(_pipes, (float)e.Time, _scoreTable);
             }
 
             //костыль против лагов
             if (RenderFrequency < _display.RefreshRate - 20)
             {
-                //Console.WriteLine($"Перезагрузка при RF: {RenderFrequency} UF: {UpdateFrequency}");
+                Console.WriteLine($"Перезагрузка при RF: {RenderFrequency} UF: {UpdateFrequency}");
                 _renderer.ClearRenderGroup(_player.Group);
                 _renderer.AddRectangleToGroup(_player.Group, _player.Rect);
             }
@@ -122,7 +124,7 @@ namespace FlappyBird.Program
             }
 
             //вывод фпс
-            if (DateTime.Now.Millisecond >= 1990)
+            if (DateTime.Now.Millisecond >= 990)
             {
                 Console.WriteLine($"Кол-во кадров: {UpdateFrequency}"); //количество фпс
                 Console.WriteLine($"Один кадр (с): {UpdatePeriod}"); //длительность одного кадра

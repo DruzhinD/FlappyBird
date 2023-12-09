@@ -23,7 +23,7 @@ namespace FlappyBird.Game
         public Player(Renderer renderer)
         {
             _renderer = renderer;
-            Rect = new Rectangle(0f, 0f, _width, _height, 8f); //Rectmode = center
+            Rect = new Rectangle(0f, 0f, _width, _height, 11f); //Rectmode = center
             //сохраняем индекс созданного буфера
             Group = _renderer.CreateRenderGroup();
             _renderer.AddRectangleToGroup(Group, Rect);
@@ -31,7 +31,6 @@ namespace FlappyBird.Game
             Alive = true;
         }
 
-        //time - время одного кадра, при 75гц - 0,0134с
         /// <summary>
         /// Движение игрока (птицы)
         /// </summary>
@@ -42,13 +41,11 @@ namespace FlappyBird.Game
                  _velocity -= 0.07f * frameTime; //для 75гц = 0,0094
 
             _position += _velocity;
-            //Console.WriteLine($"position: {Math.Round(_position, 2)}    velocity: {_velocity}");
-            //Console.WriteLine($"angle: {_angle}");
             //птица опускает клюв, если она начинает падать 
             if (_velocity < 0 && _angle > -10)
                 _angle -= 1;
             //птица поднимает клюв, когда начинает взлетать
-            if (_velocity >= 0.01f && _angle < 9)
+            if (_velocity >= 0.001f && _angle < 9)
                 _angle += 1;
             Matrix4 transform = Matrix4.Identity;
             //матрица вращения относительно оси Z
@@ -65,7 +62,7 @@ namespace FlappyBird.Game
         /// Проверка на коллизии с колоннами
         /// </summary>
         /// <param name="pipes">Колонны</param>
-        public void DetectCollision(Pipes pipes, float frameTime)
+        public void DetectCollision(Pipes pipes, float frameTime, ScoreTable scoreTable)
         {
             //проверка коллизий с верхней и нижней частью окна
             if (this._position > 1f - _height / 3 || this._position < -1f + _height / 3)
@@ -91,14 +88,8 @@ namespace FlappyBird.Game
                 if (pair.MovePosition < -1f && pair.MovePosition > -1f - pipes.PipeSpeedFrequency * frameTime)
                 {
                      Score++;
-                    Console.WriteLine($"Счет: {Score}");
-                    for (int i = 5; i <= 23; i += 6)
-                    {
-                        if (Rect.Verticies[i] == 8f)
-                            Rect.Verticies[i] = 1f;
-                        else
-                            Rect.Verticies[i] = 8f;
-                    }
+                    Console.WriteLine($"Счет: {Score}   Скорость колонн: {pipes.PipeSpeedFrequency}");
+                    scoreTable.ChangeScoreTable(Score);
                 }
             }
         }
@@ -110,8 +101,8 @@ namespace FlappyBird.Game
         {
             if (_position == -1f)
                 _position = -0.999f;
-            _velocity = 0.023f;
-            _angle = 6;
+            _velocity = 0.025f;
+            _angle += 1;
         }
     }
 }
