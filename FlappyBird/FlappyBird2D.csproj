@@ -58,6 +58,7 @@
     <Compile Include="Game\PipePair.cs" />
     <Compile Include="Game\Pipes.cs" />
     <Compile Include="Game\Player.cs" />
+    <Compile Include="Game\ScoreTable.cs" />
     <Compile Include="Program\Program.cs" />
     <Compile Include="Program\Window.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

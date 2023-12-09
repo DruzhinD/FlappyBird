@@ -45,7 +45,7 @@ namespace FlappyBird.Game
                     PipePairs[i].MovePosition = 0f; //ось x
                     Random rand = new Random();
                      PipePairs[i].OffsetY = GenFloatNumber(PipePairs[i].ConstOffsetY); //ось y
-                    PipeSpeedFrequency += 0.001f;
+                    PipeSpeedFrequency += 0.003f;
                 }
                 _renderer.SetTransformRenderGroup(
                     PipePairs[i].Group, Matrix4.CreateTranslation(PipePairs[i].MovePosition, PipePairs[i].OffsetY, 0f));
