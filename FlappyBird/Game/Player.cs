@@ -74,26 +74,31 @@ namespace FlappyBird.Game
         {
             //проверка коллизий с верхней и нижней частью окна
             if (this._position > 1f - _height / 3 || this._position < -1f + _height / 3)
+            {
                 Alive = false;
+                ChangeTexture();
+            }
 
             foreach (PipePair pair in pipes.PipePairs)
             {
 
                 //проверка коллизий с верхней колонной
                 if (_position > pair.OffsetY + pair.ConstOffsetY - this._height / 3 &&
-                    pair.MovePosition < -1f + this._width / 3 && 
-                    pair.MovePosition > -1f + this._width / 3 - 0.15f)
+                    pair.MovePosition < -1f + this._width / 2.2 && 
+                    pair.MovePosition > -1f + this._width / 2.2 - 0.15f)
                 {
                     Alive = false;
+                    ChangeTexture();
                     break;
                 }
 
                 //проверка коллизий с нижней колонной
                 if (_position < pair.OffsetY - pair.ConstOffsetY + this._height / 3 && 
-                    pair.MovePosition < -1f + this._width / 3 && 
-                    pair.MovePosition > -1f + this._width / 3 - 0.15f)
+                    pair.MovePosition < -1f + this._width / 2.2 && 
+                    pair.MovePosition > -1f + this._width / 2.2 - 0.15f)
                 {
                     Alive = false;
+                    ChangeTexture();
                     break;
                 }
 
@@ -102,6 +107,15 @@ namespace FlappyBird.Game
                 {
                      Score++;
                     scoreTable.ChangeScoreTable(Score);
+                }
+            }
+
+            //нужен для смены текстуры, после коллизии
+            void ChangeTexture()
+            {
+                for (int i = 5; i <= 23; i+=6)
+                {
+                    this.Rect.Verticies[i] = 12f; 
                 }
             }
         }

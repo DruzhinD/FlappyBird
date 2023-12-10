@@ -2,8 +2,6 @@
 using OpenTK.Graphics.OpenGL4;
 using System.Drawing.Imaging;
 using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
-using System;
-using System.IO;
 
 namespace FlappyBird.Engine
 {

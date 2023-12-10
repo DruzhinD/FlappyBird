@@ -12,10 +12,11 @@ namespace FlappyBird.Engine
 
         public TextureLoader(string configFilePath)
         {
+            //получаем путь к директории
             _directoryPath = CropAfterLastBackSlash(configFilePath);
 
             string configFile = LoadSource(configFilePath);
-            _texturePaths = configFile.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            _texturePaths = configFile.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
             for (int i = 0; i < _texturePaths.Length; i++)
             {
@@ -41,6 +42,7 @@ namespace FlappyBird.Engine
             }
         }
 
+        //загружаем индексы текстур
         public int[] GetTextureIndicies()
         {
             int[] indicies = new int[_textures.Length];

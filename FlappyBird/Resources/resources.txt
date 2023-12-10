@@ -8,7 +8,9 @@ num6.png
 num7.png
 num8.png
 num9.png
-background.png
+background2.png
 player.png
+player_crashed.png
 pipe.png
 titlescreen.png
+deathscreen.png

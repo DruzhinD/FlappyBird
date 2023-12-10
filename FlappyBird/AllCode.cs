@@ -234,7 +234,10 @@ namespace FlappyBird.AllCode
         public void DetectCollision(ref Pipes pipes, ref ScoreTable scoreTable, float frameTime)
         {
             if (this._position > 1f - _height / 3 || this._position < -1f + _height / 3)
+            {
                 Alive = false;
+                ChangeTexture();
+            }
 
             foreach (PipePair pair in pipes.PipePairs)
             {
@@ -243,6 +246,7 @@ namespace FlappyBird.AllCode
                     pair.MovePosition > -1f + this._width / 3 - 0.15f)
                 {
                     Alive = false;
+                    ChangeTexture();
                     break;
                 }
                 if (_position < pair.OffsetY - pair.ConstOffsetY + this._height / 3 &&
@@ -250,12 +254,20 @@ namespace FlappyBird.AllCode
                     pair.MovePosition > -1f + this._width / 3 - 0.15f)
                 {
                     Alive = false;
+                    ChangeTexture();
                     break;
                 }
                 if (pair.MovePosition < -1f && pair.MovePosition > -1f - pipes.PipeSpeedFrequency * frameTime)
                 {
                     Score++;
                     scoreTable.ChangeScoreTable(Score);
+                }
+            }
+            void ChangeTexture()
+            {
+                for (int i = 5; i <= 23; i += 6)
+                {
+                    this.Rect.Verticies[i] = 12f;
                 }
             }
         }
@@ -643,7 +655,7 @@ namespace FlappyBird.AllCode
         {
             _directoryPath = CropAfterLastBackSlash(configFilePath);
             string configFile = LoadSource(configFilePath);
-            _texturePaths = configFile.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            _texturePaths = configFile.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
             for (int i = 0; i < _texturePaths.Length; i++)
             {

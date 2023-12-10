@@ -29,8 +29,8 @@ namespace FlappyBird.Engine
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             //инициализируем шейдеры и все текстуры
-            _shader = new ShaderProgram(@"Shaders/shader.vert", @"Shaders/shader.frag");
-            TextureLoader loader = new TextureLoader("../../Resources/resources.txt");
+            _shader = new ShaderProgram(@"../../Shaders/shader.vert", @"../../Shaders/shader.frag");
+            TextureLoader loader = new TextureLoader(@"../../Resources/resources.txt");
 
             //создание VAO
             _vao = GL.GenVertexArray();

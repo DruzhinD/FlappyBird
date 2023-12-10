@@ -116,14 +116,6 @@ namespace FlappyBird.Program
             //можно закрыть программу нажает клавиши
             if (input.IsKeyDown(Key.Escape))
                 Exit();
-
-            //вывод фпс
-            if (DateTime.Now.Millisecond >= 990)
-            {
-                Console.WriteLine($"Кол-во кадров: {UpdateFrequency}"); //количество фпс
-                Console.WriteLine($"Один кадр (с): {UpdatePeriod}"); //длительность одного кадра
-            }
-
             base.OnUpdateFrame(e);
         }
 
@@ -157,9 +149,9 @@ namespace FlappyBird.Program
             _player = new Player(_renderer);
             _pipes = new Pipes(_renderer, 3, 0.76f, 0.31f);
             _scoreTable = new ScoreTable(_renderer);
-            _titlescreen = new Background(_renderer, 13);
+            _titlescreen = new Background(_renderer, 14);
 
-            _deathscreen = new Background(_renderer, 6f);
+            _deathscreen = new Background(_renderer, 15f);
             _renderer.RenderGroupVisible(_deathscreen.Group, false);
         }
     }
