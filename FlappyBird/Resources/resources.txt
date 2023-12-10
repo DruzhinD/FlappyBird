@@ -12,6 +12,3 @@ background.png
 player.png
 pipe.png
 titlescreen.png
-Artem_maman.png
-Murad.png
-player.bmp

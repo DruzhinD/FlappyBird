@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace FlappyBird.Engine
 {
+    /// <summary>группа объектов (прямоугольников) для обработки</summary>
     class RenderGroup
     {
         public bool Visible;
@@ -39,7 +40,7 @@ namespace FlappyBird.Engine
 
                 foreach(Rectangle rect in Rectangles)
                 {
-                    //multiply array
+                    //умножение массива
                     uint[] multarray = new uint[rect.Indicies.Length];
                     for (int i = 0; i < rect.Indicies.Length; i++)
                         multarray[i] = rect.Indicies[i] + counter * 4;

@@ -5,19 +5,25 @@ using System.Threading;
 
 namespace FlappyBird.Game
 {
+    /// <summary>игрок</summary>
     class Player
     {
         private readonly Renderer _renderer;
-        public Rectangle Rect { get; private set; }
+        public Rectangle Rect { get; }
 
+        /// <summary>скорость движения игрока в 1сек</summary>
         private float _velocity;
+        /// <summary>позиция игрока по оси Y</summary>
         private float _position;
+        /// <summary>угол наклона птицы</summary>
         private float _angle;
         private float _height = 0.16f*1.5f;
         private float _width = 0.09f*1.5f;
 
         public int Group { get; }
+        /// <summary>количество очков</summary>
         public int Score { get; private set; }
+        /// <summary>true - птица в игре, false - птица врезалась</summary>
         public bool Alive { get; private set; }
 
         public Player(Renderer renderer)
@@ -38,15 +44,16 @@ namespace FlappyBird.Game
         public void MovePlayer(float frameTime)
         {
             if (_velocity < 3f)
-                 _velocity -= 0.07f * frameTime; //для 75гц = 0,0094
-
+                 _velocity -= 0.07f * frameTime;
             _position += _velocity;
+
             //птица опускает клюв, если она начинает падать 
             if (_velocity < 0 && _angle > -10)
                 _angle -= 1;
             //птица поднимает клюв, когда начинает взлетать
             if (_velocity >= 0.001f && _angle < 9)
                 _angle += 1;
+
             Matrix4 transform = Matrix4.Identity;
             //матрица вращения относительно оси Z
             transform *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(_angle));
@@ -62,7 +69,8 @@ namespace FlappyBird.Game
         /// Проверка на коллизии с колоннами
         /// </summary>
         /// <param name="pipes">Колонны</param>
-        public void DetectCollision(Pipes pipes, float frameTime, ScoreTable scoreTable)
+        /// <param name="scoreTable">объект, необходимый для вывода количества очков на экран</param>
+        public void DetectCollision(ref Pipes pipes, ref ScoreTable scoreTable, float frameTime)
         {
             //проверка коллизий с верхней и нижней частью окна
             if (this._position > 1f - _height / 3 || this._position < -1f + _height / 3)
@@ -72,23 +80,27 @@ namespace FlappyBird.Game
             {
 
                 //проверка коллизий с верхней колонной
-                if (_position > pair.OffsetY + pair.ConstOffsetY - _height / 3 && pair.MovePosition < -1f + _width / 3 && pair.MovePosition > -1f + _width / 3 - 0.15f)
+                if (_position > pair.OffsetY + pair.ConstOffsetY - this._height / 3 &&
+                    pair.MovePosition < -1f + this._width / 3 && 
+                    pair.MovePosition > -1f + this._width / 3 - 0.15f)
                 {
                     Alive = false;
                     break;
                 }
 
                 //проверка коллизий с нижней колонной
-                if (_position < pair.OffsetY - pair.ConstOffsetY + _height / 3 && pair.MovePosition < -1f + _width / 3 && pair.MovePosition > -1f + _width / 3 - 0.15f)
+                if (_position < pair.OffsetY - pair.ConstOffsetY + this._height / 3 && 
+                    pair.MovePosition < -1f + this._width / 3 && 
+                    pair.MovePosition > -1f + this._width / 3 - 0.15f)
                 {
                     Alive = false;
                     break;
                 }
 
+                //проверка на проход между колоннами
                 if (pair.MovePosition < -1f && pair.MovePosition > -1f - pipes.PipeSpeedFrequency * frameTime)
                 {
                      Score++;
-                    Console.WriteLine($"Счет: {Score}   Скорость колонн: {pipes.PipeSpeedFrequency}");
                     scoreTable.ChangeScoreTable(Score);
                 }
             }

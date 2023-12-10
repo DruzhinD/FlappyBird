@@ -5,12 +5,12 @@ using System.Threading;
 
 namespace FlappyBird.Game
 {
+    /// <summary>все колонны</summary>
     class Pipes
     {
         private readonly Renderer _renderer;
         public PipePair[] PipePairs;
 
-        //offset - расстояние между разными парами блоков по оси X
         /// <param name="renderer">экземпляр рендера</param>
         /// <param name="count">количество генерируемых колонн</param>
         /// <param name="offsetX">расстояние между разными парами колонн (ось X)</param>
@@ -21,7 +21,6 @@ namespace FlappyBird.Game
             _renderer = renderer;
             PipePairs = new PipePair[count];
 
-            Random rand = new Random();
             for (int i = 0; i < count; i++)
             {
                 PipePairs[i] = new PipePair(_renderer, i * offsetX, offsetY);
@@ -31,7 +30,13 @@ namespace FlappyBird.Game
             }
         }
 
+        /// <summary>скорость движения колонн в секунду</summary>
         public float PipeSpeedFrequency { get; private set; } = 0.5f;
+
+        /// <summary>
+        /// Движение колонн
+        /// </summary>
+        /// <param name="frameTime">длительность одного кадра</param>
         public void MovePipes(float frameTime)
         {
             for (int i = 0; i < PipePairs.Length; i++)
@@ -43,9 +48,9 @@ namespace FlappyBird.Game
                 if (PipePairs[i].MovePosition < -2f - 0.25f)
                 {
                     PipePairs[i].MovePosition = 0f; //ось x
-                    Random rand = new Random();
                      PipePairs[i].OffsetY = GenFloatNumber(PipePairs[i].ConstOffsetY); //ось y
-                    PipeSpeedFrequency += 0.003f;
+                    //каждый раз, когда колонна перемещается на стартовую позицию, скорость её движения увеличивается
+                    PipeSpeedFrequency += 0.005f;
                 }
                 _renderer.SetTransformRenderGroup(
                     PipePairs[i].Group, Matrix4.CreateTranslation(PipePairs[i].MovePosition, PipePairs[i].OffsetY, 0f));

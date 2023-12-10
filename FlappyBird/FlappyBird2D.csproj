@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AllCode.cs" />
     <Compile Include="Engine\Objects\Rectangle.cs" />
     <Compile Include="Engine\Objects\RenderGroup.cs" />
     <Compile Include="Engine\Renderer\Renderer.cs" />
@@ -63,7 +64,7 @@
     <Compile Include="Program\Window.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Engine\Shader\ShaderProgram.cs" />
-    <None Include="Resources\resources.config" />
+    <Content Include="Resources\resources.txt" />
     <None Include="Shaders\shader.frag">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

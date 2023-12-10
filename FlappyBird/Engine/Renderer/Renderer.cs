@@ -5,9 +5,10 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace FlappyBird.Engine
 {
+    /// <summary>Класс, необходимый для обработки всех объектов и вывода их на экран</summary>
     class Renderer
     {
-        private List<RenderGroup> _renderGroups;
+        public List<RenderGroup> RenderGroups { get; private set; }
 
         private ShaderProgram _shader;
 
@@ -19,7 +20,7 @@ namespace FlappyBird.Engine
 
         public Renderer()
         {
-            _renderGroups = new List<RenderGroup>();
+            RenderGroups = new List<RenderGroup>();
 
             GL.ClearColor(1.0f, 1f, 1.0f, 1.0f);
 
@@ -29,7 +30,7 @@ namespace FlappyBird.Engine
 
             //инициализируем шейдеры и все текстуры
             _shader = new ShaderProgram(@"Shaders/shader.vert", @"Shaders/shader.frag");
-            TextureLoader loader = new TextureLoader("../../Resources/resources.config");
+            TextureLoader loader = new TextureLoader("../../Resources/resources.txt");
 
             //создание VAO
             _vao = GL.GenVertexArray();
@@ -69,9 +70,11 @@ namespace FlappyBird.Engine
             loader.UseTextures();
             _shader.SetIntArray("textures", loader.GetTextureIndicies());
         }
+
+        /// <summary>обработка объектов, совершается каждый кадр</summary>
         public void Render()
         {
-            foreach (RenderGroup group in _renderGroups)
+            foreach (RenderGroup group in RenderGroups)
             {
                 if (!group.Visible)
                     continue;
@@ -100,31 +103,45 @@ namespace FlappyBird.Engine
         /// <param name="transformationMatrix">матрица текущего состояния</param>
         public void SetTransformRenderGroup(int index, Matrix4 transformationMatrix)
         {
-            _renderGroups[index].TransformationMatrix = transformationMatrix;
+            RenderGroups[index].TransformationMatrix = transformationMatrix;
         }
 
         public int CreateRenderGroup()
         {
             RenderGroup renderGroup = new RenderGroup();
-            _renderGroups.Add(renderGroup);
-            return _renderGroups.IndexOf(renderGroup);
+            RenderGroups.Add(renderGroup);
+            return RenderGroups.IndexOf(renderGroup);
         }
 
         //вероятно добавляем прямоугольник в список буфера
         public void AddRectangleToGroup(int index, Rectangle rect)
         {
             //Console.Write(index + " ");
-            _renderGroups[index].Rectangles.Add(rect);
+            RenderGroups[index].Rectangles.Add(rect);
         }
 
         public void RenderGroupVisible(int index, bool state)
         {
-            _renderGroups[index].Visible = state;
+            RenderGroups[index].Visible = state;
         }
 
+        /// <summary>
+        /// удаление объекта из буфера видеокарты
+        /// </summary>
+        /// <param name="index">индекс буфера</param>
         public void ClearRenderGroup(int index)
         {
-            _renderGroups[index].Rectangles.Clear();
+            RenderGroups[index].Rectangles.Clear();
+        }
+
+        /// <summary>
+        /// очищение всех объектов из памяти видеокарты
+        /// </summary>
+        public void ClearAllRenderGroups()
+        {
+            if (RenderGroups != null)
+                for (int i = 0; i < RenderGroups.Count; i++)
+                    RenderGroups[i].Rectangles.Clear();
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace FlappyBird.Game
 {
+    /// <summary>отдельно взятая пара колонн</summary>
     class PipePair
     {
         private readonly Renderer _renderer;

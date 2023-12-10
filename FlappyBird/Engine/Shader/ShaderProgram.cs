@@ -47,7 +47,7 @@ namespace FlappyBird.Engine
         /// </summary>
         public void RunProgram()
         {
-            GL.UseProgram( _program );
+            GL.UseProgram(_program);
         }
 
         /// <summary>
@@ -62,6 +62,7 @@ namespace FlappyBird.Engine
             GL.DeleteProgram(_program);
         }
 
+        //создание шейдера
         private int CreateShader(ShaderType shaderType, string shaderFilePath)
         {
             //считываем содержимое шейдера в строку

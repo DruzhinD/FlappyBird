@@ -9,7 +9,6 @@ namespace FlappyBird.Program
             using (Window win = new Window(16*70, 9*70, "Flappy Bird"))
             {
                 win.Run();
-                Console.WriteLine(win.Score);
             }
             Console.ReadKey();
         }

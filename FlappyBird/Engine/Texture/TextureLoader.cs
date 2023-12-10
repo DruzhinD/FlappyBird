@@ -23,7 +23,7 @@ namespace FlappyBird.Engine
             }
 
             if (_texturePaths.Length > 32)
-                throw new Exception("Too many Textures");
+                throw new Exception("Слишком много текстур для загрузки");
 
             _textures = new Texture[_texturePaths.Length];
 
@@ -50,6 +50,7 @@ namespace FlappyBird.Engine
             return indicies;
         }
 
+        //обрезать после последнего обратного слэша
         private string CropAfterLastBackSlash(string path)
         {
             int index  = path.LastIndexOf('/') + 1;
