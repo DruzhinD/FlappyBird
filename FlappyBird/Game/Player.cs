@@ -83,9 +83,9 @@ namespace FlappyBird.Game
             {
 
                 //проверка коллизий с верхней колонной
-                if (_position > pair.OffsetY + pair.ConstOffsetY - this._height / 3 &&
-                    pair.MovePosition < -1f + this._width / 2.2 && 
-                    pair.MovePosition > -1f + this._width / 2.2 - 0.15f)
+                if (_position > pair.OffsetY + pair.ConstOffsetY - this._height / 2.5f &&
+                    pair.MovePosition< -1f + this._width / 2f && 
+                    pair.MovePosition + 0.15f > -1f - this._width / 2f)
                 {
                     Alive = false;
                     ChangeTexture();
@@ -93,9 +93,9 @@ namespace FlappyBird.Game
                 }
 
                 //проверка коллизий с нижней колонной
-                if (_position < pair.OffsetY - pair.ConstOffsetY + this._height / 3 && 
-                    pair.MovePosition < -1f + this._width / 2.2 && 
-                    pair.MovePosition > -1f + this._width / 2.2 - 0.15f)
+                if (_position < pair.OffsetY - pair.ConstOffsetY + this._height / 2.5f &&
+                    pair.MovePosition < -1f + this._width / 2f &&
+                    pair.MovePosition + 0.15f > -1f - this._width / 2f)
                 {
                     Alive = false;
                     ChangeTexture();

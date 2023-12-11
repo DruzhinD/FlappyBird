@@ -13,14 +13,15 @@ namespace FlappyBird.Engine
         public TextureLoader(string configFilePath)
         {
             //получаем путь к директории
-            _directoryPath = CropAfterLastBackSlash(configFilePath);
+            _directoryPath = Path.GetDirectoryName(configFilePath);
 
+            //загружаем всю информацию из текстового файла с именами текстур
             string configFile = LoadSource(configFilePath);
             _texturePaths = configFile.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
             for (int i = 0; i < _texturePaths.Length; i++)
             {
-                _texturePaths[i] = _directoryPath + _texturePaths[i];
+                _texturePaths[i] = _directoryPath + @"\" + _texturePaths[i];
             }
 
             if (_texturePaths.Length > 32)
@@ -33,6 +34,7 @@ namespace FlappyBird.Engine
                 _textures[i] = new Texture(_texturePaths[i]);
         }
 
+        /// <summary>Включаем использование текстур</summary>
         public void UseTextures()
         {
             var units = Enum.GetValues(typeof(TextureUnit));
@@ -50,13 +52,6 @@ namespace FlappyBird.Engine
                 indicies[i] = i;
 
             return indicies;
-        }
-
-        //обрезать после последнего обратного слэша
-        private string CropAfterLastBackSlash(string path)
-        {
-            int index  = path.LastIndexOf('/') + 1;
-            return path.Substring(0, index);
         }
 
         private string LoadSource(string path)

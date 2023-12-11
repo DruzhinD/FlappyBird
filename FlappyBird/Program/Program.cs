@@ -10,8 +10,6 @@ namespace FlappyBird.Program
             {
                 win.Run();
             }
-            Console.WriteLine("Для выхода нажмите любую клавишу");
-            Console.ReadKey();
         }
     }
 }

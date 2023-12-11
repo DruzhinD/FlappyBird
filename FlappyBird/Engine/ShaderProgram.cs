@@ -96,7 +96,7 @@ namespace FlappyBird.Engine
         public void SetMatrix4(string name, Matrix4 data)
         {
             GL.UseProgram(_program);
-            int location = GL.GetUniformLocation(_program, name);
+                   int location = GL.GetUniformLocation(_program, name);
             GL.UniformMatrix4(location, true, ref data); //uniform для GLSL
         }
 

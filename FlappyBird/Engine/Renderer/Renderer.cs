@@ -142,6 +142,7 @@ namespace FlappyBird.Engine
             if (RenderGroups != null)
                 for (int i = 0; i < RenderGroups.Count; i++)
                     RenderGroups[i].Rectangles.Clear();
+            _shader.ExitProgram();
         }
     }
 }
