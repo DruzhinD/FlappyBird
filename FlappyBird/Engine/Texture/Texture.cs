@@ -1,7 +1,6 @@
 ﻿using System.Drawing;
 using OpenTK.Graphics.OpenGL4;
 using System.Drawing.Imaging;
-using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
 namespace FlappyBird.Engine
 {
@@ -32,7 +31,7 @@ namespace FlappyBird.Engine
                     image.Width,
                     image.Height,
                     0,
-                    PixelFormat.Bgra,
+                    OpenTK.Graphics.OpenGL4.PixelFormat.Bgra,
                     PixelType.UnsignedByte,
                     data.Scan0);
             }

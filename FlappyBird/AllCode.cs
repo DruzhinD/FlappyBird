@@ -7,7 +7,6 @@ using System.Threading;
 using OpenTK.Graphics.OpenGL4;
 using System.Drawing.Imaging;
 using System.Drawing;
-using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 using System.IO;
 
 namespace FlappyBird.AllCode
@@ -580,7 +579,7 @@ namespace FlappyBird.AllCode
                     image.Width,
                     image.Height,
                     0,
-                    PixelFormat.Bgra,
+                    OpenTK.Graphics.OpenGL4.PixelFormat.Bgra,
                     PixelType.UnsignedByte,
                     data.Scan0);
             }
