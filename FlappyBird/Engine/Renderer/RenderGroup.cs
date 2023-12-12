@@ -7,6 +7,7 @@ namespace FlappyBird.Engine
     /// <summary>группа объектов (прямоугольников) для обработки</summary>
     class RenderGroup
     {
+        //в случае false объект игнорируется, и как следствие не отрисовывается на экран
         public bool Visible;
 
         public List<Rectangle> Rectangles { get; set; }

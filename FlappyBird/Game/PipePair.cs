@@ -34,9 +34,7 @@ namespace FlappyBird.Game
             ConstOffsetY = offsetY;
             //чтобы растянуть текстуру, нужно увеличить второй и четвертый аргумент
             //дробная часть второго аргумента - расстояние (высота) между парой колонн
-            //однако нужно еще подумать как это реализовать грамотно
             //уменьшить - уменьшить расстояние; увеличить - увеличить расстояние
-            //однако коллизии работают по-другому
             RectangleTop = new Rectangle(1f, 2+ConstOffsetY, 0.15f, -2f, 13f, Rectangle.RectMode.Left);
             RectangleBottom = new Rectangle(1f , -2-ConstOffsetY, 0.15f, 2f, 13f, Rectangle.RectMode.Left);
 

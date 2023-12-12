@@ -16,7 +16,8 @@ namespace FlappyBird.Engine
         private int _vbo;
         private int _ebo;
 
-        unsafe public static int VertexSize = sizeof(Vertex);
+        /// <summary>Размер одной вершины в байтах</summary>
+        unsafe public static int VertexSize = sizeof(Vertex); //24
 
         public Renderer()
         {
@@ -50,8 +51,8 @@ namespace FlappyBird.Engine
             //указываем входные переменные для шейдеров
             //первый аргумент - layout (location=...)
             //для aPosition
-            GL.EnableVertexAttribArray(0);
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, VertexSize, 0);
+            GL.EnableVertexAttribArray(0);
 
             //для aTexCoord
             GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, VertexSize, 3 * sizeof(float));
@@ -113,10 +114,9 @@ namespace FlappyBird.Engine
             return RenderGroups.IndexOf(renderGroup);
         }
 
-        //вероятно добавляем прямоугольник в список буфера
+        //добавляем прямоугольник в список объектов для отрисовки/манипуляций
         public void AddRectangleToGroup(int index, Rectangle rect)
         {
-            //Console.Write(index + " ");
             RenderGroups[index].Rectangles.Add(rect);
         }
 
@@ -126,7 +126,7 @@ namespace FlappyBird.Engine
         }
 
         /// <summary>
-        /// удаление объекта из буфера видеокарты
+        /// удаление объекта из списка объектов для отрисовки
         /// </summary>
         /// <param name="index">индекс буфера</param>
         public void ClearRenderGroup(int index)
@@ -135,7 +135,7 @@ namespace FlappyBird.Engine
         }
 
         /// <summary>
-        /// очищение всех объектов из памяти видеокарты
+        /// очищение всего списка объектов для отрисовки
         /// </summary>
         public void ClearAllRenderGroups()
         {

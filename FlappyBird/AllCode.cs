@@ -241,17 +241,17 @@ namespace FlappyBird.AllCode
 
             foreach (PipePair pair in pipes.PipePairs)
             {
-                if (_position > pair.OffsetY + pair.ConstOffsetY - this._height / 3 &&
-                    pair.MovePosition < -1f + this._width / 3 &&
-                    pair.MovePosition > -1f + this._width / 3 - 0.15f)
+                if (_position > pair.OffsetY + pair.ConstOffsetY - this._height / 2.5f &&
+                    pair.MovePosition < -1f + this._width / 2f &&
+                    pair.MovePosition + 0.15f > -1f - this._width / 2f)
                 {
                     Alive = false;
                     ChangeTexture();
                     break;
                 }
-                if (_position < pair.OffsetY - pair.ConstOffsetY + this._height / 3 &&
-                    pair.MovePosition < -1f + this._width / 3 &&
-                    pair.MovePosition > -1f + this._width / 3 - 0.15f)
+                if (_position < pair.OffsetY - pair.ConstOffsetY + this._height / 2.5f &&
+                    pair.MovePosition < -1f + this._width / 2f &&
+                    pair.MovePosition + 0.15f > -1f - this._width / 2f)
                 {
                     Alive = false;
                     ChangeTexture();
