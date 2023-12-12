@@ -65,12 +65,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Engine\ShaderProgram.cs" />
     <Content Include="Resources\resources.txt" />
-    <None Include="Shaders\shader.frag">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\shader.vert">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="Shaders\shader.frag" />
+    <None Include="Shaders\shader.vert" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
