@@ -2,7 +2,7 @@
 {
     class Rectangle
     {
-        /// <summary>вершины (0-2) <br/> координаты текстуры (3-4) <br/> индекс текстуры (5)</summary>
+        /// <summary>координаты (0-2) <br/> координаты текстуры (3-4) <br/> индекс текстуры (5)</summary>
         public float[] Verticies { get; set; }
 
         //индексы

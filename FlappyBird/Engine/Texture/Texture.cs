@@ -34,6 +34,8 @@ namespace FlappyBird.Engine
                     OpenTK.Graphics.OpenGL4.PixelFormat.Bgra,
                     PixelType.UnsignedByte,
                     data.Scan0);
+
+                image.UnlockBits(data);
             }
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
@@ -41,8 +43,6 @@ namespace FlappyBird.Engine
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
-
-            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
         }
 
         /// <summary>привязываемся к текстуре</summary>

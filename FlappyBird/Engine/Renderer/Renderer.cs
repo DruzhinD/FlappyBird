@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 
@@ -47,7 +48,7 @@ namespace FlappyBird.Engine
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
             GL.BufferData(BufferTarget.ElementArrayBuffer, 6 * sizeof(uint), IntPtr.Zero, BufferUsageHint.DynamicDraw);
 
-            
+            Console.WriteLine($"vao: {_vao}     vbo: {_vbo}     ebo: {_ebo}");
             //указываем входные переменные для шейдеров
             //первый аргумент - layout (location=...)
             //для aPosition
@@ -143,6 +144,12 @@ namespace FlappyBird.Engine
                 for (int i = 0; i < RenderGroups.Count; i++)
                     RenderGroups[i].Rectangles.Clear();
             _shader.ExitProgram();
+
+            //удаление буферов
+            GL.BindVertexArray(0);
+            GL.DeleteVertexArray(_vao);
+            GL.DeleteBuffer(_vbo);
+            GL.DeleteBuffer(_ebo);
         }
     }
 }

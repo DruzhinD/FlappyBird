@@ -26,6 +26,7 @@ namespace FlappyBird.AllCode
         public Window(int width, int height, string title) : base(width, height, GraphicsMode.Default, title) { }
         protected override void OnLoad(EventArgs e)
         {
+            CursorVisible = false;
             VSync = VSyncMode.On;
             _display = DisplayDevice.GetDisplay(DisplayIndex.Default);
             Location = new System.Drawing.Point((_display.Width - Width) / 2, (_display.Height - Height) / 2);

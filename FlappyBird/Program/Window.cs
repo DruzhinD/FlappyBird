@@ -32,6 +32,7 @@ namespace FlappyBird.Program
 
         protected override void OnLoad(EventArgs e)
         {
+            CursorVisible = false;
             VSync = VSyncMode.On;
             //создаем экземпляр, содержащий информацию о дисплее
             _display = DisplayDevice.GetDisplay(DisplayIndex.Default);

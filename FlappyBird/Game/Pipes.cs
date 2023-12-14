@@ -26,6 +26,7 @@ namespace FlappyBird.Game
                 PipePairs[i] = new PipePair(_renderer, i * offsetX, offsetY);
                 
                 PipePairs[i].OffsetY = GenFloatNumber(PipePairs[i].ConstOffsetY);
+                
                 Thread.Sleep(1);
             }
         }
@@ -45,7 +46,7 @@ namespace FlappyBird.Game
 
                 //блок кода, необходимый для респауна колонн, при этом -2f - это расстояние между боковыми краями экрана
                 //-2 из-за особенностей трансформации матрицами, на деле координата будет -1 -1*[ширина блока]
-                if (PipePairs[i].MovePosition < -2f - 0.25f)
+                if (PipePairs[i].MovePosition < -2f - 0.15f)
                 {
                     PipePairs[i].MovePosition = 0f; //ось x
                      PipePairs[i].OffsetY = GenFloatNumber(PipePairs[i].ConstOffsetY); //ось y

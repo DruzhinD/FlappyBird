@@ -2,6 +2,7 @@
 using OpenTK;
 using System;
 using System.Threading;
+using PointF = System.Drawing.PointF;
 
 namespace FlappyBird.Game
 {
@@ -13,7 +14,7 @@ namespace FlappyBird.Game
 
         /// <summary>скорость движения игрока в 1сек</summary>
         private float _velocity;
-        /// <summary>позиция игрока по оси Y</summary>
+        /// <summary>позиция игрока по оси Y (центр прямоугольника)</summary>
         private float _position;
         /// <summary>угол наклона птицы</summary>
         private float _angle;
@@ -73,7 +74,7 @@ namespace FlappyBird.Game
         public void DetectCollision(ref Pipes pipes, ref ScoreTable scoreTable, float frameTime)
         {
             //проверка коллизий с верхней и нижней частью окна
-            if (this._position > 1f - _height / 3 || this._position < -1f + _height / 3)
+            if (this._position > 1f - _height / 2 || this._position < -1f + _height / 2)
             {
                 Alive = false;
                 ChangeTexture();
@@ -81,21 +82,22 @@ namespace FlappyBird.Game
 
             foreach (PipePair pair in pipes.PipePairs)
             {
-
+                PointF pipeTopPos = new PointF(pair.MovePosition + 1f, pair.OffsetY + pair.ConstOffsetY);
                 //проверка коллизий с верхней колонной
-                if (_position > pair.OffsetY + pair.ConstOffsetY - this._height / 2.5f &&
-                    pair.MovePosition< -1f + this._width / 2f && 
-                    pair.MovePosition + 0.15f > -1f - this._width / 2f)
+                if (_position + this._height / 2 > pipeTopPos.Y &&
+                    pipeTopPos.X < this._width / 2.2f &&
+                    pipeTopPos.X + 0.15f > -this._width / 2.2f)
                 {
                     Alive = false;
                     ChangeTexture();
                     break;
                 }
 
+                PointF pipeBottomPos = new PointF(pair.MovePosition + 1f, pair.OffsetY - pair.ConstOffsetY);
                 //проверка коллизий с нижней колонной
-                if (_position < pair.OffsetY - pair.ConstOffsetY + this._height / 2.5f &&
-                    pair.MovePosition < -1f + this._width / 2f &&
-                    pair.MovePosition + 0.15f > -1f - this._width / 2f)
+                if (_position - this._height / 2 < pipeBottomPos.Y &&
+                    pipeBottomPos.X < this._width / 2.2f &&
+                    pipeBottomPos.X + 0.15f > -this._width / 2.2f)
                 {
                     Alive = false;
                     ChangeTexture();
@@ -103,7 +105,7 @@ namespace FlappyBird.Game
                 }
 
                 //проверка на проход между колоннами
-                if (pair.MovePosition < -1f && pair.MovePosition > -1f - pipes.PipeSpeedFrequency * frameTime)
+                if (pipeTopPos.X < 0f && pipeTopPos.X > - pipes.PipeSpeedFrequency * frameTime)
                 {
                      Score++;
                     scoreTable.ChangeScoreTable(Score);
@@ -115,7 +117,7 @@ namespace FlappyBird.Game
             {
                 for (int i = 5; i <= 23; i+=6)
                 {
-                    this.Rect.Verticies[i] = 12f; 
+                    this.Rect.Verticies[i] = 12f;
                 }
             }
         }
