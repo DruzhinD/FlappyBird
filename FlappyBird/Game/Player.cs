@@ -75,7 +75,7 @@ namespace FlappyBird.Game
             if (this._position > 1f - _height / 2 || this._position < -1f + _height / 2)
             {
                 Alive = false;
-                ChangeTexture();
+                //ChangeTexture();
             }
 
             foreach (PipePair pair in pipes.PipePairs)
@@ -87,7 +87,7 @@ namespace FlappyBird.Game
                     pipeTopPos.X + 0.15f > this._width / 2.2f)
                 {
                     Alive = false;
-                    ChangeTexture();
+                    //ChangeTexture();
                     break;
                 }
 
@@ -98,7 +98,7 @@ namespace FlappyBird.Game
                     pipeBottomPos.X + 0.15f > this._width / 2.2f)
                 {
                     Alive = false;
-                    ChangeTexture();
+                    //ChangeTexture();
                     break;
                 }
 

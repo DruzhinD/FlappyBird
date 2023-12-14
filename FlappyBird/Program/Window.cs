@@ -37,7 +37,7 @@ namespace FlappyBird.Program
         {
             try
             {
-                _soundPlayer = new SoundPlayer(filePath);
+                _soundPlayer = new SoundPlayer(filePath, 0.6f);
             }
             catch (Exception ex)
             {
@@ -47,7 +47,7 @@ namespace FlappyBird.Program
 
         protected override void OnLoad(EventArgs e)
         {
-            CursorVisible = false;
+            //CursorVisible = false;
             VSync = VSyncMode.On;
             //создаем экземпляр, содержащий информацию о дисплее
             _display = DisplayDevice.GetDisplay(DisplayIndex.Default);
@@ -55,7 +55,7 @@ namespace FlappyBird.Program
             Location = new System.Drawing.Point((_display.Width - Width) / 2, (_display.Height - Height) / 2);
 
             StartOrRestartGame(true);
-            TryLoadSound(@"..\..\resources\wing.wav");
+            TryLoadSound(@"..\..\resources\murad.wav");
 
             base.OnLoad(e);
         }

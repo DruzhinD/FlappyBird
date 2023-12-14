@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{3670A2FA-B3A1-4511-8DD4-61F86FB498F7}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>FlappyBird</RootNamespace>
     <AssemblyName>FlappyBird2D</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
