@@ -27,6 +27,7 @@ namespace FlappyBird.Program
         private Pipes _pipes;
 
         private DisplayDevice _display;
+        private SoundPlayer soundPlayer = new SoundPlayer("sampleTest.wav");
 
         public Window(int width, int height, string title) : base(width, height, GraphicsMode.Default, title) { }
 
@@ -79,6 +80,7 @@ namespace FlappyBird.Program
                 {
                     jumpCounter++;
                     _player.Jump();
+                    soundPlayer.Play();
                 }
             }
             else if (input.IsKeyUp(Key.Space) && running)

@@ -86,7 +86,7 @@ namespace FlappyBird.Game
                 //проверка коллизий с верхней колонной
                 if (_position + this._height / 2 > pipeTopPos.Y &&
                     pipeTopPos.X < this._width / 2.2f &&
-                    pipeTopPos.X + 0.15f > -this._width / 2.2f)
+                    pipeTopPos.X + 0.15f > this._width / 2.2f)
                 {
                     Alive = false;
                     ChangeTexture();
@@ -97,7 +97,7 @@ namespace FlappyBird.Game
                 //проверка коллизий с нижней колонной
                 if (_position - this._height / 2 < pipeBottomPos.Y &&
                     pipeBottomPos.X < this._width / 2.2f &&
-                    pipeBottomPos.X + 0.15f > -this._width / 2.2f)
+                    pipeBottomPos.X + 0.15f > this._width / 2.2f)
                 {
                     Alive = false;
                     ChangeTexture();

@@ -33,7 +33,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GroupDocs.Metadata, Version=23.12.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <HintPath>..\packages\GroupDocs.Metadata.23.12.0\lib\net472\GroupDocs.Metadata.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTK, Version=3.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenTK.3.1.0\lib\net20\OpenTK.dll</HintPath>
     </Reference>
@@ -53,6 +59,7 @@
     <Compile Include="Engine\Renderer\RenderGroup.cs" />
     <Compile Include="Engine\Renderer\Renderer.cs" />
     <Compile Include="Engine\Renderer\Vertex.cs" />
+    <Compile Include="Engine\SoundPlayer.cs" />
     <Compile Include="Engine\Texture\Texture.cs" />
     <Compile Include="Engine\Texture\TextureLoader.cs" />
     <Compile Include="Game\Background.cs" />

@@ -48,7 +48,6 @@ namespace FlappyBird.Engine
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
             GL.BufferData(BufferTarget.ElementArrayBuffer, 6 * sizeof(uint), IntPtr.Zero, BufferUsageHint.DynamicDraw);
 
-            Console.WriteLine($"vao: {_vao}     vbo: {_vbo}     ebo: {_ebo}");
             //указываем входные переменные для шейдеров
             //первый аргумент - layout (location=...)
             //для aPosition
