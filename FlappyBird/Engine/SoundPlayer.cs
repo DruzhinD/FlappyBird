@@ -1,6 +1,4 @@
-﻿using GroupDocs.Metadata;
-using GroupDocs.Metadata.Formats.Audio;
-using OpenTK.Audio;
+﻿using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
 using System;
 using System.Collections.Generic;
@@ -28,23 +26,9 @@ namespace FlappyBird.Engine
                 throw new AudioException("Проблема со звуком");
             }
 
-            ALFormat format;
-            int frequency;
-            using (Metadata metadata = new Metadata("ветер.wav"))
-            {
-                var root = metadata.GetRootPackage<WavRootPackage>();
-                format = GetSoundFormat(root.WavPackage.NumberOfChannels, root.WavPackage.BitsPerSample);
-                frequency = root.WavPackage.SampleRate;
-                Console.WriteLine("Bits per Sample: " + root.WavPackage.BitsPerSample); // Bits per Sample
-                //Console.WriteLine("Block Align: " + root.WavPackage.BlockAlign); // Block Align
-                //Console.WriteLine("Byte Rate: " + root.WavPackage.ByteRate); // Byte Rate
-                Console.WriteLine("Number of Channels: " + root.WavPackage.NumberOfChannels); // Number of Channels
-                //Console.WriteLine("Audio Format: " + root.WavPackage.AudioFormat); // Audio Format 
-                Console.WriteLine("Sample Rate: " + root.WavPackage.SampleRate); // Sample Rate
-            }
 
             byte[] soundData = File.ReadAllBytes(soundFilePath);
-            AL.BufferData(_buffer, format, soundData, soundData.Length, frequency);
+            AL.BufferData(_buffer, ALFormat.Mono16, soundData, soundData.Length, 44100);
             AL.Source(_source, ALSourcei.Buffer, _buffer);
 
             AL.Source(_source, ALSourcef.Gain, 1.0f); //громкость
@@ -55,19 +39,6 @@ namespace FlappyBird.Engine
         public void Play()
         {
             AL.SourcePlay(_source);
-        }
-
-        static ALFormat GetSoundFormat(int channels, int bitsPerSample)
-        {
-
-            if (channels == 1 & bitsPerSample == 8)
-                return ALFormat.Mono8;
-            else if (channels == 2 & bitsPerSample == 8)
-                return ALFormat.Stereo8;
-            else if (channels == 2 & bitsPerSample == 16)
-                return ALFormat.Stereo16;
-            else
-                return ALFormat.Mono16;
         }
 
     }

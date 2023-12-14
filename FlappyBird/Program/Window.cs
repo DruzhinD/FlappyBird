@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading;
+using System.Collections.Generic;
 using FlappyBird.Engine;
 using FlappyBird.Game;
 using OpenTK;
@@ -18,7 +18,7 @@ namespace FlappyBird.Program
         private bool _screen = false;
 
         private Renderer _renderer;
-        private Background _background; //отмечен как неиспользуемый, т.к. фон является статическим и неизменяется
+        private Background _background;
         private Background _titlescreen;
         private Background _deathscreen;
         private Player _player;
@@ -27,7 +27,10 @@ namespace FlappyBird.Program
         private Pipes _pipes;
 
         private DisplayDevice _display;
-        private SoundPlayer soundPlayer = new SoundPlayer("sampleTest.wav");
+        private List<SoundPlayer> sounds = new List<SoundPlayer>()
+        {
+            new SoundPlayer("wing.wav"),
+        };
 
         public Window(int width, int height, string title) : base(width, height, GraphicsMode.Default, title) { }
 
@@ -80,7 +83,7 @@ namespace FlappyBird.Program
                 {
                     jumpCounter++;
                     _player.Jump();
-                    soundPlayer.Play();
+                    sounds[0].Play();
                 }
             }
             else if (input.IsKeyUp(Key.Space) && running)
