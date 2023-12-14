@@ -1,7 +1,5 @@
 ﻿using FlappyBird.Engine;
 using OpenTK;
-using System;
-using System.Threading;
 using PointF = System.Drawing.PointF;
 
 namespace FlappyBird.Game

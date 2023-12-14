@@ -8,6 +8,9 @@ using OpenTK.Graphics.OpenGL4;
 using System.Drawing.Imaging;
 using System.Drawing;
 using System.IO;
+using OpenTK.Audio.OpenAL;
+using OpenTK.Audio;
+using PointF = System.Drawing.PointF;
 
 namespace FlappyBird.AllCode
 {
@@ -23,7 +26,19 @@ namespace FlappyBird.AllCode
         private ScoreTable _scoreTable;
         private Pipes _pipes;
         private DisplayDevice _display;
+        private SoundPlayer _soundPlayer;
         public Window(int width, int height, string title) : base(width, height, GraphicsMode.Default, title) { }
+        private void TryLoadSound(string filePath)
+        {
+            try
+            {
+                _soundPlayer = new SoundPlayer(filePath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
         protected override void OnLoad(EventArgs e)
         {
             CursorVisible = false;
@@ -31,6 +46,7 @@ namespace FlappyBird.AllCode
             _display = DisplayDevice.GetDisplay(DisplayIndex.Default);
             Location = new System.Drawing.Point((_display.Width - Width) / 2, (_display.Height - Height) / 2);
             StartOrRestartGame(true);
+            TryLoadSound(@"..\..\resources\wing.wav");
             base.OnLoad(e);
         }
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -61,6 +77,8 @@ namespace FlappyBird.AllCode
                 {
                     jumpCounter++;
                     _player.Jump();
+                    if (_soundPlayer != null)
+                        _soundPlayer.Play();
                 }
             }
             else if (input.IsKeyUp(Key.Space) && running)
@@ -73,7 +91,6 @@ namespace FlappyBird.AllCode
                     WindowState = WindowState.Normal;
                 else
                     WindowState = WindowState.Fullscreen;
-
                 _screen = true;
             }
             else if (input.IsKeyUp(Key.F11) && _screen == true)
@@ -106,16 +123,16 @@ namespace FlappyBird.AllCode
         }
         private void StartOrRestartGame(bool startFlag)
         {
+
             if (startFlag != true)
                 _renderer.ClearAllRenderGroups();
-
             _renderer = new Renderer();
             _background = new Background(_renderer, 10);
             _player = new Player(_renderer);
             _pipes = new Pipes(_renderer, 3, 0.76f, 0.31f);
             _scoreTable = new ScoreTable(_renderer);
-            _titlescreen = new Background(_renderer, 13);
-            _deathscreen = new Background(_renderer, 6f);
+            _titlescreen = new Background(_renderer, 14);
+            _deathscreen = new Background(_renderer, 15f);
             _renderer.RenderGroupVisible(_deathscreen.Group, false);
         }
     }
@@ -145,8 +162,8 @@ namespace FlappyBird.AllCode
         {
             _renderer = renderer;
             ConstOffsetY = offsetY;
-            RectangleTop = new Rectangle(1f, 2 + ConstOffsetY, 0.15f, -2f, 12f, Rectangle.RectMode.Left);
-            RectangleBottom = new Rectangle(1f, -2 - ConstOffsetY, 0.15f, 2f, 12f, Rectangle.RectMode.Left);
+            RectangleTop = new Rectangle(1f, 2 + ConstOffsetY, 0.15f, -2f, 13f, Rectangle.RectMode.Left);
+            RectangleBottom = new Rectangle(1f, -2 - ConstOffsetY, 0.15f, 2f, 13f, Rectangle.RectMode.Left);
             Group = _renderer.CreateRenderGroup();
             _renderer.AddRectangleToGroup(Group, RectangleBottom);
             _renderer.AddRectangleToGroup(Group, RectangleTop);
@@ -173,11 +190,11 @@ namespace FlappyBird.AllCode
         {
             for (int i = 0; i < PipePairs.Length; i++)
             {
-                PipePairs[i].MovePosition -= PipeSpeedFrequency * frameTime;
-                if (PipePairs[i].MovePosition < -2f - 0.25f)
+                PipePairs[i].MovePosition -= PipeSpeedFrequency * frameTime; 
+                if (PipePairs[i].MovePosition < -2f - 0.15f)
                 {
-                    PipePairs[i].MovePosition = 0f;
-                    PipePairs[i].OffsetY = GenFloatNumber(PipePairs[i].ConstOffsetY);
+                    PipePairs[i].MovePosition = 0f; 
+                    PipePairs[i].OffsetY = GenFloatNumber(PipePairs[i].ConstOffsetY); 
                     PipeSpeedFrequency += 0.005f;
                 }
                 _renderer.SetTransformRenderGroup(
@@ -228,36 +245,37 @@ namespace FlappyBird.AllCode
                 _angle += 1;
             Matrix4 transform = Matrix4.Identity;
             transform *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(_angle));
-            transform *= Matrix4.CreateTranslation(0f, _position, 0f);   
+            transform *= Matrix4.CreateTranslation(0f, _position, 0f);
             _renderer.SetTransformRenderGroup(Group, transform);
         }
         public void DetectCollision(ref Pipes pipes, ref ScoreTable scoreTable, float frameTime)
         {
-            if (this._position > 1f - _height / 3 || this._position < -1f + _height / 3)
+            if (this._position > 1f - _height / 2 || this._position < -1f + _height / 2)
             {
                 Alive = false;
                 ChangeTexture();
             }
-
             foreach (PipePair pair in pipes.PipePairs)
             {
-                if (_position > pair.OffsetY + pair.ConstOffsetY - this._height / 2.5f &&
-                    pair.MovePosition < -1f + this._width / 2f &&
-                    pair.MovePosition + 0.15f > -1f - this._width / 2f)
+                PointF pipeTopPos = new PointF(pair.MovePosition + 1f, pair.OffsetY + pair.ConstOffsetY);
+                if (_position + this._height / 2 > pipeTopPos.Y &&
+                    pipeTopPos.X < this._width / 2.2f &&
+                    pipeTopPos.X + 0.15f > this._width / 2.2f)
                 {
                     Alive = false;
                     ChangeTexture();
                     break;
                 }
-                if (_position < pair.OffsetY - pair.ConstOffsetY + this._height / 2.5f &&
-                    pair.MovePosition < -1f + this._width / 2f &&
-                    pair.MovePosition + 0.15f > -1f - this._width / 2f)
+                PointF pipeBottomPos = new PointF(pair.MovePosition + 1f, pair.OffsetY - pair.ConstOffsetY);
+                if (_position - this._height / 2 < pipeBottomPos.Y &&
+                    pipeBottomPos.X < this._width / 2.2f &&
+                    pipeBottomPos.X + 0.15f > this._width / 2.2f)
                 {
                     Alive = false;
                     ChangeTexture();
                     break;
                 }
-                if (pair.MovePosition < -1f && pair.MovePosition > -1f - pipes.PipeSpeedFrequency * frameTime)
+                if (pipeTopPos.X < 0f && pipeTopPos.X > -pipes.PipeSpeedFrequency * frameTime)
                 {
                     Score++;
                     scoreTable.ChangeScoreTable(Score);
@@ -289,6 +307,7 @@ namespace FlappyBird.AllCode
         public ScoreTable(Renderer renderer)
         {
             _renderer = renderer;
+
             KeyValuePair<Rectangle, int> currentRect = GenNewRectangle();
             Rectangles = new Dictionary<Rectangle, int>()
             {
@@ -297,6 +316,7 @@ namespace FlappyBird.AllCode
         }
         private KeyValuePair<Rectangle, int> GenNewRectangle()
         {
+
             int Group = _renderer.CreateRenderGroup();
             KeyValuePair<Rectangle, int> currentRect = new KeyValuePair<Rectangle, int>(
                 new Rectangle(-1f + currentOffsetX, -1f, _width, _height, 0f, Rectangle.RectMode.Left), Group);
@@ -340,13 +360,11 @@ namespace FlappyBird.AllCode
             {
                 float[] verticies =
                 {
-                    
                     posX - width/2, posY - height/2, 0.0f,    0.0f, 1.0f, textureIndex, 
                     posX - width/2, posY + height/2, 0.0f,    0.0f, 0.0f, textureIndex, 
                     posX + width/2, posY - height/2, 0.0f,    1.0f, 1.0f, textureIndex, 
                     posX + width/2, posY + height/2, 0.0f,    1.0f, 0.0f, textureIndex 
                 };
-
                 this.Verticies = verticies;
             }
             else if (mode == RectMode.Left)
@@ -358,9 +376,96 @@ namespace FlappyBird.AllCode
                     posX + width, posY, 0.0f,                 1.0f, 1.0f,   textureIndex, 
                     posX + width, posY + height, 0.0f,        1.0f, 0.0f,   textureIndex 
                  };
-
                 this.Verticies = verticies;
             }
+        }
+    }
+    class Renderer
+    {
+        public List<RenderGroup> RenderGroups { get; private set; }
+        private ShaderProgram _shader;
+        private int _vao;
+        private int _vbo;
+        private int _ebo;
+        unsafe public static int VertexSize = sizeof(Vertex); 
+        public Renderer()
+        {
+            RenderGroups = new List<RenderGroup>();
+            GL.ClearColor(1.0f, 1f, 1.0f, 1.0f);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            _shader = new ShaderProgram(@"../../Shaders/shader.vert", @"../../Shaders/shader.frag");
+            TextureLoader loader = new TextureLoader(@"../../Resources/resources.txt");
+            _vao = GL.GenVertexArray();
+            GL.BindVertexArray(_vao);
+            _vbo = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
+            GL.BufferData(BufferTarget.ArrayBuffer, VertexSize * 4, IntPtr.Zero, BufferUsageHint.DynamicDraw);
+            _ebo = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, 6 * sizeof(uint), IntPtr.Zero, BufferUsageHint.DynamicDraw);
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, VertexSize, 0);
+            GL.EnableVertexAttribArray(0);
+            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, VertexSize, 3 * sizeof(float));
+            GL.EnableVertexAttribArray(1);
+            GL.VertexAttribPointer(2, 1, VertexAttribPointerType.Float, false, VertexSize, 5 * sizeof(float));
+            GL.EnableVertexAttribArray(2);
+            _shader.RunProgram();
+            _shader.SetMatrix4("transform", Matrix4.Identity);
+            loader.UseTextures();
+            _shader.SetIntArray("textures", loader.GetTextureIndicies());
+        }
+        public void Render()
+        {
+            foreach (RenderGroup group in RenderGroups)
+            {
+                if (!group.Visible)
+                    continue;
+
+                GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
+                GL.BufferData(BufferTarget.ArrayBuffer, group.Rectangles.Count * 4 * VertexSize, group.Verticies, BufferUsageHint.DynamicDraw);
+
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
+                GL.BufferData(BufferTarget.ElementArrayBuffer, group.Rectangles.Count * 6 * sizeof(uint), group.Indicies, BufferUsageHint.DynamicDraw);
+
+                _shader.SetMatrix4("transform", group.TransformationMatrix);
+
+                GL.BindVertexArray(_vao);
+                GL.DrawElements(BeginMode.Triangles, 6 * sizeof(uint), DrawElementsType.UnsignedInt, 0);
+            }
+        }
+        public void SetTransformRenderGroup(int index, Matrix4 transformationMatrix)
+        {
+            RenderGroups[index].TransformationMatrix = transformationMatrix;
+        }
+        public int CreateRenderGroup()
+        {
+            RenderGroup renderGroup = new RenderGroup();
+            RenderGroups.Add(renderGroup);
+            return RenderGroups.IndexOf(renderGroup);
+        }
+        public void AddRectangleToGroup(int index, Rectangle rect)
+        {
+            RenderGroups[index].Rectangles.Add(rect);
+        }
+        public void RenderGroupVisible(int index, bool state)
+        {
+            RenderGroups[index].Visible = state;
+        }
+        public void ClearRenderGroup(int index)
+        {
+            RenderGroups[index].Rectangles.Clear();
+        }
+        public void ClearAllRenderGroups()
+        {
+            if (RenderGroups != null)
+                for (int i = 0; i < RenderGroups.Count; i++)
+                    RenderGroups[i].Rectangles.Clear();
+            _shader.ExitProgram();
+            GL.BindVertexArray(0);
+            GL.DeleteVertexArray(_vao);
+            GL.DeleteBuffer(_vbo);
+            GL.DeleteBuffer(_ebo);
         }
     }
     class RenderGroup
@@ -378,7 +483,6 @@ namespace FlappyBird.AllCode
                 {
                     length += rect.Verticies.Length;
                     Array.Resize<float>(ref temparray, length);
-
                     rect.Verticies.CopyTo(temparray, length - Renderer.VertexSize);
                 }
                 return temparray;
@@ -410,155 +514,11 @@ namespace FlappyBird.AllCode
             Visible = visible;
         }
     }
-    class Renderer
-    {
-        public List<RenderGroup> RenderGroups { get; private set; }
-        private ShaderProgram _shader;
-        private int _vao;
-        private int _vbo;
-        private int _ebo;
-        unsafe public static int VertexSize = sizeof(Vertex);
-        public Renderer()
-        {
-            RenderGroups = new List<RenderGroup>();
-            GL.ClearColor(1.0f, 1f, 1.0f, 1.0f);
-            GL.Enable(EnableCap.Blend);
-            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-            _shader = new ShaderProgram(@"Shaders/shader.vert", @"Shaders/shader.frag");
-            TextureLoader loader = new TextureLoader("../../Resources/resources.txt");
-            _vao = GL.GenVertexArray();
-            GL.BindVertexArray(_vao);
-            _vbo = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, VertexSize * 4, IntPtr.Zero, BufferUsageHint.DynamicDraw);
-            _ebo = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, 6 * sizeof(uint), IntPtr.Zero, BufferUsageHint.DynamicDraw);
-            GL.EnableVertexAttribArray(0);
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, VertexSize, 0);
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, VertexSize, 3 * sizeof(float));
-            GL.EnableVertexAttribArray(1);
-            GL.VertexAttribPointer(2, 1, VertexAttribPointerType.Float, false, VertexSize, 5 * sizeof(float));
-            GL.EnableVertexAttribArray(2);
-            _shader.RunProgram();
-            _shader.SetMatrix4("transform", Matrix4.Identity);   
-            loader.UseTextures();
-            _shader.SetIntArray("textures", loader.GetTextureIndicies());
-        }
-        public void Render()
-        {
-            foreach (RenderGroup group in RenderGroups)
-            {
-                if (!group.Visible)
-                    continue;
-                GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
-                GL.BufferData(BufferTarget.ArrayBuffer, group.Rectangles.Count * 4 * VertexSize, group.Verticies, BufferUsageHint.DynamicDraw);
-                GL.BindBuffer(BufferTarget.ElementArrayBuffer, _ebo);
-                GL.BufferData(BufferTarget.ElementArrayBuffer, group.Rectangles.Count * 6 * sizeof(uint), group.Indicies, BufferUsageHint.DynamicDraw);
-                _shader.SetMatrix4("transform", group.TransformationMatrix);
-                GL.BindVertexArray(_vao);
-                GL.DrawElements(BeginMode.Triangles, 6 * sizeof(uint), DrawElementsType.UnsignedInt, 0);
-            }
-        }
-        public void SetTransformRenderGroup(int index, Matrix4 transformationMatrix)
-        {
-            RenderGroups[index].TransformationMatrix = transformationMatrix;
-        }
-        public int CreateRenderGroup()
-        {
-            RenderGroup renderGroup = new RenderGroup();
-            RenderGroups.Add(renderGroup);
-            return RenderGroups.IndexOf(renderGroup);
-        }
-        public void AddRectangleToGroup(int index, Rectangle rect)
-        {
-            
-            RenderGroups[index].Rectangles.Add(rect);
-        }
-        public void RenderGroupVisible(int index, bool state)
-        {
-            RenderGroups[index].Visible = state;
-        }
-        public void ClearRenderGroup(int index)
-        {
-            RenderGroups[index].Rectangles.Clear();
-        }
-        public void ClearAllRenderGroups()
-        {
-            if (RenderGroups != null)
-                for (int i = 0; i < RenderGroups.Count; i++)
-                    RenderGroups[i].Rectangles.Clear();
-            _shader.ExitProgram();
-        }
-    }
     unsafe struct Vertex
     {
-        public fixed float Position[3];
-        public fixed float TexCoords[2];
-        public float TextureIndex;
-    }
-    internal class ShaderProgram
-    {
-        private readonly int _vertexShaderID;
-        private readonly int _fragmentShaderID;
-        private readonly int _program;
-        public ShaderProgram(string vertShaderPath, string fragShaderPath)
-        {
-            _vertexShaderID = CreateShader(ShaderType.VertexShader, vertShaderPath);
-            _fragmentShaderID = CreateShader(ShaderType.FragmentShader, fragShaderPath);
-            _program = GL.CreateProgram();
-            GL.AttachShader(_program, _vertexShaderID);
-            GL.AttachShader(_program, _fragmentShaderID);
-            GL.LinkProgram(_program);
-            GL.GetProgram(_program, GetProgramParameterName.LinkStatus, out int code);
-            if (code != (int)All.True)
-            {
-                string infoLog = GL.GetProgramInfoLog(_program);
-                throw new Exception($"Ошибка компиляции шейдерной программы \n {infoLog}");
-            }   
-            DeleteShader(_vertexShaderID);
-            DeleteShader(_fragmentShaderID);
-        }
-        public void RunProgram()
-        {
-            GL.UseProgram(_program);
-        }
-        public void ExitProgram()
-        {
-            GL.UseProgram(0);   
-            GL.DeleteProgram(_program);
-        }
-        private int CreateShader(ShaderType shaderType, string shaderFilePath)
-        {
-            string shaderString = File.ReadAllText(shaderFilePath);
-            int shaderID = GL.CreateShader(shaderType);
-            GL.ShaderSource(shaderID, shaderString);
-            GL.CompileShader(shaderID);
-            GL.GetShader(shaderID, ShaderParameter.CompileStatus, out int code);
-            if (code != (int)All.True)
-            {   
-                string infoLog = GL.GetShaderInfoLog(shaderID);
-                throw new Exception($"Ошибка компиляции шейдера №{shaderID} \n {infoLog}");
-            }
-            return shaderID;
-        }
-        private void DeleteShader(int shaderID)
-        {
-            GL.DetachShader(_program, shaderID);
-            GL.DeleteShader(shaderID);
-        }
-        public void SetMatrix4(string name, Matrix4 data)
-        {
-            GL.UseProgram(_program);
-            int location = GL.GetUniformLocation(_program, name);
-            GL.UniformMatrix4(location, true, ref data); 
-        }
-        public void SetIntArray(string name, int[] data)
-        {
-            GL.UseProgram(_program);
-            int location = GL.GetUniformLocation(_program, name);
-            GL.Uniform1(location, data.Length, data);
-        }
+        public fixed float Position[3]; 
+        public fixed float TexCoords[2]; 
+        public float TextureIndex; 
     }
     class Texture
     {
@@ -573,7 +533,6 @@ namespace FlappyBird.AllCode
                     new System.Drawing.Rectangle(0, 0, image.Width, image.Height),
                     ImageLockMode.ReadOnly,
                     System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
                 GL.TexImage2D(TextureTarget.Texture2D,
                     0,
                     PixelInternalFormat.Rgba,
@@ -583,12 +542,12 @@ namespace FlappyBird.AllCode
                     OpenTK.Graphics.OpenGL4.PixelFormat.Bgra,
                     PixelType.UnsignedByte,
                     data.Scan0);
+                image.UnlockBits(data);
             }
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMinFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
-            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
         }
         public void Use(TextureUnit unit = TextureUnit.Texture0)
         {
@@ -606,7 +565,6 @@ namespace FlappyBird.AllCode
             _directoryPath = Path.GetDirectoryName(configFilePath);
             string configFile = LoadSource(configFilePath);
             _texturePaths = configFile.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-
             for (int i = 0; i < _texturePaths.Length; i++)
             {
                 _texturePaths[i] = _directoryPath + @"\" + _texturePaths[i];
@@ -630,7 +588,6 @@ namespace FlappyBird.AllCode
             int[] indicies = new int[_textures.Length];
             for (int i = 0; i < indicies.Length; i++)
                 indicies[i] = i;
-
             return indicies;
         }
         private string LoadSource(string path)
@@ -639,6 +596,95 @@ namespace FlappyBird.AllCode
             {
                 return reader.ReadToEnd();
             }
+        }
+    }
+    public class ShaderProgram
+    {
+        private readonly int _vertexShaderID;
+        private readonly int _fragmentShaderID;
+        private readonly int _program;
+        public ShaderProgram(string vertShaderPath, string fragShaderPath)
+        {
+            _vertexShaderID = CreateShader(ShaderType.VertexShader, vertShaderPath);
+            _fragmentShaderID = CreateShader(ShaderType.FragmentShader, fragShaderPath);
+            _program = GL.CreateProgram();
+            GL.AttachShader(_program, _vertexShaderID);
+            GL.AttachShader(_program, _fragmentShaderID);
+            GL.LinkProgram(_program);
+            GL.GetProgram(_program, GetProgramParameterName.LinkStatus, out int code);
+            if (code != (int)All.True)
+            {
+                string infoLog = GL.GetProgramInfoLog(_program);
+                throw new Exception($"Ошибка компиляции шейдерной программы \n {infoLog}");
+            }
+            DeleteShader(_vertexShaderID);
+            DeleteShader(_fragmentShaderID);
+        }
+        public void RunProgram()
+        {
+            GL.UseProgram(_program);
+        }
+        public void ExitProgram()
+        {
+            GL.UseProgram(0);
+            GL.DeleteProgram(_program);
+        }
+        private int CreateShader(ShaderType shaderType, string shaderFilePath)
+        {
+            string shaderString = File.ReadAllText(shaderFilePath);
+            int shaderID = GL.CreateShader(shaderType);
+            GL.ShaderSource(shaderID, shaderString);
+            GL.CompileShader(shaderID);
+            GL.GetShader(shaderID, ShaderParameter.CompileStatus, out int code);
+            if (code != (int)All.True)
+            {
+
+                string infoLog = GL.GetShaderInfoLog(shaderID);
+                throw new Exception($"Ошибка компиляции шейдера №{shaderID} \n {infoLog}");
+            }
+            return shaderID;
+        }
+        private void DeleteShader(int shaderID)
+        {
+            GL.DetachShader(_program, shaderID);
+            GL.DeleteShader(shaderID);
+        }
+        public void SetMatrix4(string name, Matrix4 data)
+        {
+            GL.UseProgram(_program);
+            int location = GL.GetUniformLocation(_program, name);
+            GL.UniformMatrix4(location, true, ref data); 
+        }
+        public void SetIntArray(string name, int[] data)
+        {
+            GL.UseProgram(_program);
+            int location = GL.GetUniformLocation(_program, name);
+            GL.Uniform1(location, data.Length, data);
+        }
+    }
+    public class SoundPlayer
+    {
+        private int _buffer;
+        private int _source;
+        private AudioContext _context;
+        public SoundPlayer(string soundFilePath, float soundLoud = 0.4f)
+        {
+            _context = new AudioContext();
+            _buffer = AL.GenBuffer();
+            _source = AL.GenSource();
+            if (AL.GetError() != ALError.NoError)
+            {
+                throw new AudioException("Проблема со звуком");
+            }
+            byte[] soundData = File.ReadAllBytes(soundFilePath);
+            AL.BufferData(_buffer, ALFormat.Mono16, soundData, soundData.Length, 44100);
+            AL.Source(_source, ALSourcei.Buffer, _buffer);
+            AL.Source(_source, ALSourcef.Gain, soundLoud); 
+            AL.Source(_source, ALSourceb.Looping, false); 
+        }
+        public void Play()
+        {
+            AL.SourcePlay(_source);
         }
     }
 }

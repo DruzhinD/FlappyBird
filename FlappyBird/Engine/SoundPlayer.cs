@@ -1,11 +1,6 @@
 ﻿using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FlappyBird.Engine
 {
@@ -15,7 +10,9 @@ namespace FlappyBird.Engine
         private int _source;
         private AudioContext _context;
 
-        public SoundPlayer(string soundFilePath) 
+        /// <param name="soundFilePath">путь к аудиофайлу</param>
+        /// <param name="soundLoud">громкость звука, не больше 1f</param>
+        public SoundPlayer(string soundFilePath, float soundLoud = 0.4f) 
         {
             _context = new AudioContext();
             _buffer = AL.GenBuffer();
@@ -26,20 +23,22 @@ namespace FlappyBird.Engine
                 throw new AudioException("Проблема со звуком");
             }
 
-
+            //считываем поток байтов из аудиофайла
             byte[] soundData = File.ReadAllBytes(soundFilePath);
+            //привязываемся к буферу
             AL.BufferData(_buffer, ALFormat.Mono16, soundData, soundData.Length, 44100);
             AL.Source(_source, ALSourcei.Buffer, _buffer);
 
-            AL.Source(_source, ALSourcef.Gain, 1.0f); //громкость
+            AL.Source(_source, ALSourcef.Gain, soundLoud); //громкость
             AL.Source(_source, ALSourceb.Looping, false); //повторение
         }
 
-        //воспроизводим звук
+        /// <summary>
+        /// Воспроизвести звук
+        /// </summary>
         public void Play()
         {
             AL.SourcePlay(_source);
         }
-
     }
 }

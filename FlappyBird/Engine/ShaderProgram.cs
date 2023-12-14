@@ -8,7 +8,7 @@ namespace FlappyBird.Engine
     /// <summary>
     /// Создание шейдерной программы
     /// </summary>
-    internal class ShaderProgram
+    public class ShaderProgram
     {
         private readonly int _vertexShaderID;
         private readonly int _fragmentShaderID;

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using FlappyBird.Engine;
 using FlappyBird.Game;
 using OpenTK;
@@ -27,12 +26,24 @@ namespace FlappyBird.Program
         private Pipes _pipes;
 
         private DisplayDevice _display;
-        private List<SoundPlayer> sounds = new List<SoundPlayer>()
-        {
-            new SoundPlayer("wing.wav"),
-        };
+        //воспроизводит звук
+        private SoundPlayer _soundPlayer;
 
         public Window(int width, int height, string title) : base(width, height, GraphicsMode.Default, title) { }
+
+        //попытка подключить звук
+        //возможные проблемы: не удается найти файл; не установлена библиотека OpenAL32.dll
+        private void TryLoadSound(string filePath)
+        {
+            try
+            {
+                _soundPlayer = new SoundPlayer(filePath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
 
         protected override void OnLoad(EventArgs e)
         {
@@ -44,6 +55,7 @@ namespace FlappyBird.Program
             Location = new System.Drawing.Point((_display.Width - Width) / 2, (_display.Height - Height) / 2);
 
             StartOrRestartGame(true);
+            TryLoadSound(@"..\..\resources\wing.wav");
 
             base.OnLoad(e);
         }
@@ -83,7 +95,8 @@ namespace FlappyBird.Program
                 {
                     jumpCounter++;
                     _player.Jump();
-                    sounds[0].Play();
+                    if (_soundPlayer != null)
+                        _soundPlayer.Play();
                 }
             }
             else if (input.IsKeyUp(Key.Space) && running)
@@ -109,6 +122,7 @@ namespace FlappyBird.Program
             //если игрок врезался, то игра завершается
             if (!_player.Alive)
             {
+                //sounds["удар"].Play();
                 _renderer.RenderGroupVisible(_deathscreen.Group, true);
                 running = false;
             }
