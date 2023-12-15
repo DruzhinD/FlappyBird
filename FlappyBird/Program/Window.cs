@@ -37,7 +37,7 @@ namespace FlappyBird.Program
         {
             try
             {
-                _soundPlayer = new SoundPlayer(filePath, 0.6f);
+                _soundPlayer = new SoundPlayer(filePath, 0.7f);
             }
             catch (Exception ex)
             {
@@ -55,7 +55,7 @@ namespace FlappyBird.Program
             Location = new System.Drawing.Point((_display.Width - Width) / 2, (_display.Height - Height) / 2);
 
             StartOrRestartGame(true);
-            TryLoadSound(@"..\..\resources\murad.wav");
+            TryLoadSound(@"..\..\resources\wing.wav");
 
             base.OnLoad(e);
         }

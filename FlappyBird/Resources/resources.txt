@@ -8,9 +8,9 @@ num6.png
 num7.png
 num8.png
 num9.png
-murad_background.png
-murad.png
+background.png
+player.png
 player_crashed.png
-pipe_priora.png
-empty.png
+pipe.png
+titlescreen.png
 deathscreen.png
