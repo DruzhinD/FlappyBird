@@ -51,7 +51,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AllCode.cs" />
     <Compile Include="Engine\Renderer\Rectangle.cs" />
     <Compile Include="Engine\Renderer\RenderGroup.cs" />
     <Compile Include="Engine\Renderer\Renderer.cs" />
