@@ -59,7 +59,7 @@ namespace FlappyBird.Program
 
             base.OnLoad(e);
         }
-
+        
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             if (_player.Alive && running)
