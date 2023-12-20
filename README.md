@@ -8,3 +8,6 @@
 * игровой движок (Engine);
 * игровые объекты (Game);
 * описание окна приложения (Program).
+ 
+
+#Flappybird #OpenTK #OpenGL
